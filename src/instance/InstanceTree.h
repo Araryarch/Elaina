@@ -32,8 +32,13 @@ public:
     uintptr_t FindDataModelViaVE() const;
 
     uintptr_t FindModuleScript(const std::string& name) const;
+    uintptr_t FindAnyModuleScript(uintptr_t root = 0) const;
+    uintptr_t FindAnyLocalScript(uintptr_t root = 0) const;
+    uintptr_t FindDescendantByClass(uintptr_t root, const std::string& className, int maxDepth = 10) const;
 
 private:
+    using Predicate = bool (*)(const InstanceTree&, uintptr_t);
+    uintptr_t FindRecurse(uintptr_t root, Predicate pred, int maxDepth) const;
     const Memory& m_mem;
     uintptr_t m_base;
 };

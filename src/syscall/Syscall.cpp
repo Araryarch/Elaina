@@ -6,6 +6,7 @@ struct SyscallTable {
     uint32_t NtOpenProcess = 0, NtReadVirtualMemory = 0, NtWriteVirtualMemory = 0;
     uint32_t NtAllocateVirtualMemory = 0, NtFreeVirtualMemory = 0, NtProtectVirtualMemory = 0;
     uint32_t NtSuspendProcess = 0, NtResumeProcess = 0, NtQueryInformationProcess = 0, NtClose = 0;
+    uint32_t NtCreateThreadEx = 0, NtGetContextThread = 0, NtSetContextThread = 0, NtResumeThread = 0, NtWaitForSingleObject = 0;
 };
 static SyscallTable g_sc{};
 
@@ -70,6 +71,11 @@ bool Syscall::ParseExports(void* fileBase) {
         {"NtResumeProcess", &g_sc.NtResumeProcess},
         {"NtQueryInformationProcess", &g_sc.NtQueryInformationProcess},
         {"NtClose", &g_sc.NtClose},
+        {"NtCreateThreadEx", &g_sc.NtCreateThreadEx},
+        {"NtGetContextThread", &g_sc.NtGetContextThread},
+        {"NtSetContextThread", &g_sc.NtSetContextThread},
+        {"NtResumeThread", &g_sc.NtResumeThread},
+        {"NtWaitForSingleObject", &g_sc.NtWaitForSingleObject},
     };
 
     int found = 0;
@@ -129,4 +135,34 @@ NTSTATUS Syscall::ResumeProcess(HANDLE hProc) {
 NTSTATUS Syscall::CloseHandle(HANDLE h) {
     currentSSN = g_sc.NtClose;
     return DoSyscall((void*)h, nullptr, nullptr, nullptr, nullptr, nullptr);
+}
+
+NTSTATUS Syscall::CreateThreadEx(PHANDLE hThread, ACCESS_MASK access, PVOID objAttr, HANDLE hProc, PVOID start, PVOID param) {
+    currentSSN = g_sc.NtCreateThreadEx;
+    return DoSyscall((void*)hThread, (void*)(uintptr_t)access, objAttr, (void*)hProc, start, param);
+}
+
+NTSTATUS Syscall::FreeMemory(HANDLE hProc, void** addr, SIZE_T* size, ULONG type) {
+    currentSSN = g_sc.NtFreeVirtualMemory;
+    return DoSyscall((void*)hProc, (void*)addr, (void*)size, (void*)(uintptr_t)type, nullptr, nullptr);
+}
+
+NTSTATUS Syscall::GetContextThread(HANDLE hThread, CONTEXT* ctx) {
+    currentSSN = g_sc.NtGetContextThread;
+    return DoSyscall((void*)hThread, (void*)ctx, nullptr, nullptr, nullptr, nullptr);
+}
+
+NTSTATUS Syscall::SetContextThread(HANDLE hThread, CONTEXT* ctx) {
+    currentSSN = g_sc.NtSetContextThread;
+    return DoSyscall((void*)hThread, (void*)ctx, nullptr, nullptr, nullptr, nullptr);
+}
+
+NTSTATUS Syscall::ResumeThread(HANDLE hThread) {
+    currentSSN = g_sc.NtResumeThread;
+    return DoSyscall((void*)hThread, nullptr, nullptr, nullptr, nullptr, nullptr);
+}
+
+NTSTATUS Syscall::WaitForSingleObject(HANDLE h, ULONG timeout) {
+    currentSSN = g_sc.NtWaitForSingleObject;
+    return DoSyscall((void*)h, (void*)(uintptr_t)FALSE, (void*)(uintptr_t)timeout, nullptr, nullptr, nullptr);
 }

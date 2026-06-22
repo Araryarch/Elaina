@@ -27,6 +27,12 @@ public:
     static NTSTATUS SuspendProcess(HANDLE hProc);
     static NTSTATUS ResumeProcess(HANDLE hProc);
     static NTSTATUS CloseHandle(HANDLE h);
+    static NTSTATUS CreateThreadEx(PHANDLE hThread, ACCESS_MASK access, PVOID objAttr, HANDLE hProc, PVOID start, PVOID param);
+    static NTSTATUS FreeMemory(HANDLE hProc, void** addr, SIZE_T* size, ULONG type);
+    static NTSTATUS GetContextThread(HANDLE hThread, CONTEXT* ctx);
+    static NTSTATUS SetContextThread(HANDLE hThread, CONTEXT* ctx);
+    static NTSTATUS ResumeThread(HANDLE hThread);
+    static NTSTATUS WaitForSingleObject(HANDLE h, ULONG timeout);
 
 private:
     static bool ParseExports(void* fileBase);

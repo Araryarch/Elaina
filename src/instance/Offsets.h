@@ -67,6 +67,9 @@ struct OffsetTable {
     uintptr_t PS_Size = 0x8;
     uintptr_t PS_Capabilities = 0x10;
 
+    // Lua state (from ScriptContext)
+    uintptr_t SC_LuaState = 0x130;
+
     // LocalScript
     uintptr_t LS_Bytecode = 0x1A8;
     uintptr_t LS_BytecodePtr = 0x10;
@@ -149,5 +152,6 @@ namespace offsets {
     }
     namespace ScriptContext {
         inline constexpr uintptr_t RequireBypass = 0x920;
+        inline constexpr uintptr_t LuaState = 0x130;
     }
 }

@@ -3,8 +3,19 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <utility>
 #include "core/Result.h"
 #include "syscall/Syscall.h"
+
+struct SectionInfo {
+    uintptr_t start = 0;
+    size_t size = 0;
+};
+
+struct PatternByte {
+    uint8_t data;
+    bool wildcard;
+};
 
 class Memory {
 public:
@@ -35,6 +46,21 @@ public:
     Result<std::string> ReadString(uintptr_t addr) const;
 
     Result<uintptr_t> Allocate(size_t size, uint32_t protect = PAGE_READWRITE);
+
+    // PE / section helpers
+    SectionInfo GetSection(const char* name) const;
+    uintptr_t GetModuleBase() const { return m_base; }
+
+    // Pattern scanning
+    static std::vector<PatternByte> ParsePattern(const std::string& pattern);
+    uintptr_t ScanPattern(uintptr_t start, size_t size, const std::vector<PatternByte>& pattern) const;
+    uintptr_t ScanSection(const char* section, const std::string& patternStr) const;
+
+    // Handle access
+    HANDLE GetProcessHandle() const { return m_process; }
+
+    // Remote thread creation helper
+    Result<HANDLE> CreateRemoteThread(void* startAddr, void* param) const;
 
 private:
     HANDLE m_process;

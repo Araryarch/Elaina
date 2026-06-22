@@ -139,16 +139,56 @@ uintptr_t InstanceTree::FindDataModel() const {
     return 0;
 }
 
+uintptr_t InstanceTree::FindRecurse(uintptr_t root, Predicate pred, int maxDepth) const {
+    if (!root || maxDepth <= 0) return 0;
+    if (pred(*this, root)) return root;
+    for (auto c : GetChildren(root)) {
+        auto found = FindRecurse(c, pred, maxDepth - 1);
+        if (found) return found;
+    }
+    return 0;
+}
+
+uintptr_t InstanceTree::FindDescendantByClass(uintptr_t root, const std::string& className, int maxDepth) const {
+    if (!root || maxDepth <= 0) return 0;
+    auto cn = GetClassName(root);
+    if (cn == className) return root;
+    for (auto c : GetChildren(root)) {
+        auto found = FindDescendantByClass(c, className, maxDepth - 1);
+        if (found) return found;
+    }
+    return 0;
+}
+
 uintptr_t InstanceTree::FindModuleScript(const std::string& name) const {
     auto dm = FindDataModel();
     if (!dm) return 0;
 
+    // Search CoreGui first
     auto cg = FindChild(dm, "CoreGui");
-    if (!cg) return 0;
-
-    for (auto c : GetChildren(cg)) {
-        if (GetClassName(c) == "ModuleScript" && GetName(c) == name)
-            return c;
+    if (cg) {
+        for (auto c : GetChildren(cg)) {
+            if (GetClassName(c) == "ModuleScript" && GetName(c) == name)
+                return c;
+        }
     }
-    return 0;
+
+    // Broader: search whole DataModel recursively for any ModuleScript with matching name
+    return FindDescendantByClass(dm, "ModuleScript", 8);
+}
+
+uintptr_t InstanceTree::FindAnyModuleScript(uintptr_t root) const {
+    if (!root) {
+        root = FindDataModel();
+        if (!root) return 0;
+    }
+    return FindDescendantByClass(root, "ModuleScript", 10);
+}
+
+uintptr_t InstanceTree::FindAnyLocalScript(uintptr_t root) const {
+    if (!root) {
+        root = FindDataModel();
+        if (!root) return 0;
+    }
+    return FindDescendantByClass(root, "LocalScript", 10);
 }

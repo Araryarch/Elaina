@@ -2,6 +2,7 @@
 #include "core/Log.h"
 #include "syscall/Syscall.h"
 #include <TlHelp32.h>
+#include <vector>
 
 std::vector<DWORD> Process::FindAll() {
     std::vector<DWORD> pids;
@@ -64,4 +65,41 @@ bool Process::IsRunning(DWORD pid) {
     GetExitCodeProcess(h, &exit);
     CloseHandle(h);
     return exit == STILL_ACTIVE;
+}
+
+Result<HANDLE> Process::CreateRemoteThread(HANDLE hProc, void* startAddr, void* param) {
+    HANDLE hThread = nullptr;
+    NTSTATUS st = Syscall::CreateThreadEx(&hThread, THREAD_ALL_ACCESS, nullptr, hProc, startAddr, param);
+    if (st != 0 || !hThread)
+        return { Err::InjectFailed, "NtCreateThreadEx failed: " + std::to_string(st) };
+    return hThread;
+}
+
+Result<void*> Process::AllocateExecute(HANDLE hProc, const std::vector<uint8_t>& data, void* param) {
+    if (data.empty()) return { Err::InjectFailed, "empty shellcode" };
+
+    SIZE_T size = data.size();
+    void* remoteBuf = nullptr;
+    NTSTATUS st = Syscall::AllocateMemory(hProc, &remoteBuf, size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    if (st != 0 || !remoteBuf)
+        return { Err::AllocFailed, "remote alloc failed: " + std::to_string(st) };
+
+    SIZE_T written = 0;
+    st = Syscall::WriteMemory(hProc, remoteBuf, data.data(), size, &written);
+    if (st != 0 || written != size) {
+        Syscall::FreeMemory(hProc, &remoteBuf, &size, MEM_RELEASE);
+        return { Err::MemoryWriteFailed, "write shellcode failed" };
+    }
+
+    auto threadResult = CreateRemoteThread(hProc, remoteBuf, param);
+    if (!threadResult) {
+        Syscall::FreeMemory(hProc, &remoteBuf, &size, MEM_RELEASE);
+        return { threadResult.error, threadResult.message };
+    }
+
+    // Wait briefly for thread to complete
+    Syscall::WaitForSingleObject(threadResult.value, 5000);
+    Syscall::CloseHandle(threadResult.value);
+
+    return remoteBuf;
 }

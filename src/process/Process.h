@@ -33,4 +33,8 @@ public:
 
     static std::string ErrorName(DWORD pid);
     static bool IsRunning(DWORD pid);
+
+    // Remote thread via NtCreateThreadEx
+    static Result<HANDLE> CreateRemoteThread(HANDLE hProc, void* startAddr, void* param);
+    static Result<void*> AllocateExecute(HANDLE hProc, const std::vector<uint8_t>& data, void* param = nullptr);
 };

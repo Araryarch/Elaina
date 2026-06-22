@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.10)
 project(Elaina)
 
+if(POLICY CMP0167)
+    cmake_policy(SET CMP0167 OLD)
+endif()
+if(CMAKE_VERSION VERSION_GREATER_EQUAL "4.0.0")
+    set(CMAKE_POLICY_VERSION_MINIMUM 3.5.0)
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 

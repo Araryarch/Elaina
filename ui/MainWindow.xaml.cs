@@ -25,8 +25,8 @@ namespace ElainaUI
                 p.LineHeight = 1.2;
                 var run = new Run(msg)
                 {
-                    Foreground = color ?? new SolidColorBrush(Color.FromRgb(0xc0, 0xc0, 0xd0)),
-                    FontSize = 12
+                    Foreground = color ?? new SolidColorBrush(Color.FromRgb(0xe0, 0xe0, 0xf0)),
+                    FontSize = 11.5
                 };
                 p.Inlines.Add(run);
                 ConsoleBox.Document.Blocks.Add(p);
@@ -36,17 +36,17 @@ namespace ElainaUI
 
         private void LogError(string msg)
         {
-            Log("✗ " + msg, new SolidColorBrush(Color.FromRgb(0xe9, 0x45, 0x60)));
+            Log("Error: " + msg, new SolidColorBrush(Color.FromRgb(0xff, 0x47, 0x57)));
         }
 
         private void LogOk(string msg)
         {
-            Log("✓ " + msg, new SolidColorBrush(Color.FromRgb(0x00, 0xb8, 0x94)));
+            Log("OK: " + msg, new SolidColorBrush(Color.FromRgb(0x2e, 0xd5, 0x73)));
         }
 
         private void LogInfo(string msg)
         {
-            Log("→ " + msg, new SolidColorBrush(Color.FromRgb(0x6c, 0x5c, 0xe7)));
+            Log("-> " + msg, new SolidColorBrush(Color.FromRgb(0x7c, 0x5c, 0xfc)));
         }
 
         private void UpdateStatus(string text, bool connected = false)
@@ -54,12 +54,11 @@ namespace ElainaUI
             Dispatcher.Invoke(() =>
             {
                 StatusText.Text = text;
-                StatusDot.Fill = new SolidColorBrush(connected
-                    ? Color.FromRgb(0x00, 0xb8, 0x94)
-                    : Color.FromRgb(0x6c, 0x6c, 0x80));
-                StatusText.Foreground = new SolidColorBrush(connected
-                    ? Color.FromRgb(0x00, 0xb8, 0x94)
-                    : Color.FromRgb(0x6c, 0x6c, 0x80));
+                var color = connected
+                    ? new SolidColorBrush(Color.FromRgb(0x2e, 0xd5, 0x73))
+                    : new SolidColorBrush(Color.FromRgb(0x6c, 0x6c, 0x88));
+                StatusDot.Fill = color;
+                StatusText.Foreground = color;
             });
         }
 
@@ -77,7 +76,7 @@ namespace ElainaUI
             }
             else
             {
-                LogError("Failed to attach — Roblox not found");
+                LogError("Failed to attach - Roblox not found");
                 UpdateStatus(ElainaCore.GetStatus());
             }
         }
@@ -88,7 +87,7 @@ namespace ElainaUI
             AttachBtn.IsEnabled = true;
             ExecuteBtn.IsEnabled = false;
             InjectBtn.IsEnabled = false;
-            PidText.Text = "—";
+            PidText.Text = "";
             UpdateStatus("Detached");
             LogInfo("Detached from Roblox");
         }
@@ -137,7 +136,7 @@ namespace ElainaUI
         private void OnClearConsole(object sender, RoutedEventArgs e)
         {
             ConsoleBox.Document.Blocks.Clear();
-            Log("Console cleared", new SolidColorBrush(Color.FromRgb(0x6c, 0x6c, 0x80)));
+            Log("Console cleared");
         }
 
         protected override void OnKeyDown(KeyEventArgs e)

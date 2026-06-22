@@ -3,48 +3,72 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Elaina Executor" Height="720" Width="1000"
         WindowStartupLocation="CenterScreen"
-        Background="#0d0d1a" FontFamily="Segoe UI" Foreground="#0d0d1a"
+        Background="#06060C" FontFamily="Segoe UI" Foreground="#EBEBF0"
         WindowStyle="SingleBorderWindow" ResizeMode="CanResize">
     <Window.Resources>
-        <SolidColorBrush x:Key="Dark" Color="#0d0d1a"/>
-        <SolidColorBrush x:Key="White" Color="#ffffff"/>
-        <SolidColorBrush x:Key="Cyan" Color="#00bcd4"/>
-        <SolidColorBrush x:Key="Orange" Color="#ff6d00"/>
-        <SolidColorBrush x:Key="Danger" Color="#d50000"/>
-        <SolidColorBrush x:Key="Success" Color="#00c853"/>
-        <SolidColorBrush x:Key="LightBg" Color="#f5f5f5"/>
+        <!-- Obsidian Protocol — Color tokens -->
+        <SolidColorBrush x:Key="Void" Color="#06060C"/>
+        <SolidColorBrush x:Key="Base" Color="#0C0C14"/>
+        <SolidColorBrush x:Key="Surface" Color="#12121E"/>
+        <SolidColorBrush x:Key="Raised" Color="#1A1A2E"/>
+        <SolidColorBrush x:Key="Accent" Color="#4D00B4"/>
+        <SolidColorBrush x:Key="AccentHover" Color="#5E17C8"/>
+        <SolidColorBrush x:Key="AccentLight" Color="#7B3FE4"/>
+        <SolidColorBrush x:Key="AccentMuted" Color="#2D006A"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="#EBEBF0"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="#8F8FA3"/>
+        <SolidColorBrush x:Key="TextTertiary" Color="#525266"/>
+        <SolidColorBrush x:Key="TextAccent" Color="#9D6FED"/>
+        <SolidColorBrush x:Key="BorderSubtle" Color="#262638"/>
+        <SolidColorBrush x:Key="BorderMedium" Color="#3A3A52"/>
+        <SolidColorBrush x:Key="BorderAccent" Color="#4D00B4"/>
+        <SolidColorBrush x:Key="Glass3" Color="#0A0A14"/>
+        <SolidColorBrush x:Key="Glass5" Color="#0D0D1A"/>
+        <SolidColorBrush x:Key="Glass8" Color="#141428"/>
+        <SolidColorBrush x:Key="Success" Color="#00C48C"/>
+        <SolidColorBrush x:Key="SuccessMuted" Color="#0A2E24"/>
+        <SolidColorBrush x:Key="Error" Color="#FF4757"/>
+        <SolidColorBrush x:Key="ErrorMuted" Color="#2E0E14"/>
+        <SolidColorBrush x:Key="Warning" Color="#FFB547"/>
+        <SolidColorBrush x:Key="Info" Color="#3B82F6"/>
 
-        <Style x:Key="BrutalBtn" TargetType="Button">
-            <Setter Property="Background" Value="#ffffff"/>
-            <Setter Property="Foreground" Value="#0d0d1a"/>
-            <Setter Property="BorderThickness" Value="3"/>
-            <Setter Property="BorderBrush" Value="#0d0d1a"/>
-            <Setter Property="Padding" Value="20,10"/>
+        <!-- Button: Solid (primary CTA) -->
+        <Style x:Key="BtnSolid" TargetType="Button">
+            <Setter Property="Background" Value="#4D00B4"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#4D00B4"/>
+            <Setter Property="Padding" Value="20,0"/>
+            <Setter Property="Height" Value="40"/>
             <Setter Property="FontSize" Value="13"/>
-            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontWeight" Value="500"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Grid>
-                            <Border Background="#0d0d1a" CornerRadius="0"
-                                    Margin="3,3,0,0" SnapsToDevicePixels="True"/>
-                            <Border Name="bg" Background="{TemplateBinding Background}"
-                                    CornerRadius="0" Padding="{TemplateBinding Padding}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    SnapsToDevicePixels="True">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                        </Grid>
+                        <Border Name="bg" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12"
+                                SnapsToDevicePixels="True"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1"/>
+                            </Border.RenderTransform>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="bg" Property="Background" Value="#e0f7fa"/>
-                                <Setter TargetName="bg" Property="Margin" Value="1,1,0,0"/>
+                                <Setter TargetName="bg" Property="Background" Value="#5E17C8"/>
+                                <Setter TargetName="bg" Property="BorderBrush" Value="#7B3FE4"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="bg" Property="Margin" Value="3,3,0,0"/>
-                                <Setter TargetName="bg" Property="Background" Value="#b2ebf2"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.97" ScaleY="0.97"/>
+                                    </Setter.Value>
+                                </Setter>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.4"/>
@@ -55,58 +79,173 @@
             </Setter>
         </Style>
 
-        <Style x:Key="AccentBrutalBtn" TargetType="Button" BasedOn="{StaticResource BrutalBtn}">
-            <Setter Property="Background" Value="#00bcd4"/>
-            <Setter Property="Foreground" Value="#ffffff"/>
-            <Setter Property="BorderBrush" Value="#0d0d1a"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#26c6da"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#00acc1"/>
-                </Trigger>
-            </Style.Triggers>
+        <!-- Button: Outline -->
+        <Style x:Key="BtnOutline" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#EBEBF0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#262638"/>
+            <Setter Property="Padding" Value="20,0"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="500"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="bg" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12"
+                                SnapsToDevicePixels="True"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1"/>
+                            </Border.RenderTransform>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bg" Property="Background" Value="#0A0A14"/>
+                                <Setter TargetName="bg" Property="BorderBrush" Value="#3A3A52"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.97" ScaleY="0.97"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
-        <Style x:Key="DangerBrutalBtn" TargetType="Button" BasedOn="{StaticResource BrutalBtn}">
-            <Setter Property="Background" Value="#d50000"/>
-            <Setter Property="Foreground" Value="#ffffff"/>
-            <Setter Property="BorderBrush" Value="#0d0d1a"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#e53935"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#c62828"/>
-                </Trigger>
-            </Style.Triggers>
+        <!-- Button: Ghost -->
+        <Style x:Key="BtnGhost" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#8F8FA3"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="500"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="bg" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12"
+                                SnapsToDevicePixels="True"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1"/>
+                            </Border.RenderTransform>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bg" Property="Background" Value="#0A0A14"/>
+                                <Setter Property="Foreground" Value="#EBEBF0"/>
+                                <Setter TargetName="bg" Property="BorderBrush" Value="#262638"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.97" ScaleY="0.97"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.3"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
-        <Style x:Key="SuccessBrutalBtn" TargetType="Button" BasedOn="{StaticResource BrutalBtn}">
-            <Setter Property="Background" Value="#00c853"/>
-            <Setter Property="Foreground" Value="#ffffff"/>
-            <Setter Property="BorderBrush" Value="#0d0d1a"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#00e676"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#00a844"/>
-                </Trigger>
-            </Style.Triggers>
+        <!-- ScrollBar: thin dark minimal -->
+        <Style x:Key="DarkScrollBar" TargetType="ScrollBar">
+            <Setter Property="Width" Value="6"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid Background="{TemplateBinding Background}">
+                            <Track Name="PART_Track" IsDirectionReversed="False">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.PageUpCommand" Background="Transparent"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.PageDownCommand" Background="Transparent"/>
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Background="#3A3A52" BorderThickness="0"
+                                           Width="6" Margin="0,1">
+                                        <Thumb.Style>
+                                            <Style TargetType="Thumb">
+                                                <Setter Property="Background" Value="#3A3A52"/>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#525266"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsDragging" Value="True">
+                                                        <Setter Property="Background" Value="#666680"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Thumb.Style>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- RichTextBox dark scrollbar -->
+        <Style x:Key="DarkRichTextBox" TargetType="RichTextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RichTextBox">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Background="{TemplateBinding Background}">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          VerticalScrollBarVisibility="{TemplateBinding VerticalScrollBarVisibility}"
+                                          HorizontalScrollBarVisibility="{TemplateBinding HorizontalScrollBarVisibility}">
+                                <ScrollViewer.Resources>
+                                    <Style TargetType="ScrollBar" BasedOn="{StaticResource DarkScrollBar}"/>
+                                </ScrollViewer.Resources>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
 
-    <Grid Margin="16">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="64"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="32"/>
         </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <Border Grid.Row="0" Background="#ffffff" BorderBrush="#0d0d1a" BorderThickness="3" Padding="16,10" Margin="0,0,0,14">
+        <!-- Navbar (Glass) -->
+        <Border Grid.Row="0" Background="#0A0A14" BorderBrush="#262638" BorderThickness="0,0,0,1"
+                Padding="20,0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -114,71 +253,86 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Background="#00bcd4" Width="12" Height="12" VerticalAlignment="Center" Margin="0,0,10,0" BorderBrush="#0d0d1a" BorderThickness="2"/>
-                    <TextBlock Text="EL AINA" FontSize="20" Foreground="#0d0d1a" FontWeight="ExtraBlack" VerticalAlignment="Center"/>
-                    <TextBlock Text=" EXECUTOR" FontSize="13" Foreground="#00bcd4" FontWeight="Bold" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                    <Border Background="#4D00B4" Width="10" Height="10" CornerRadius="2"
+                            VerticalAlignment="Center" Margin="0,0,12,0"/>
+                    <TextBlock Text="ELAINA" FontSize="16" Foreground="#EBEBF0" FontWeight="700"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text=" EXECUTOR" FontSize="11" Foreground="#8F8FA3" FontWeight="400"
+                               VerticalAlignment="Center" Margin="6,0,0,0"/>
                 </StackPanel>
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Background="#00c853" Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,6,0" BorderBrush="#0d0d1a" BorderThickness="2"/>
-                    <TextBlock x:Name="StatusText" Text="IDLE" FontSize="12" Foreground="#0d0d1a" FontWeight="Bold" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="PidText" Text="" FontSize="12" Foreground="#757575" FontWeight="Bold" Margin="14,0,0,0" VerticalAlignment="Center"/>
+                    <Border Background="#0A0A14" CornerRadius="8" BorderBrush="#262638" BorderThickness="1"
+                            Padding="8,4" Margin="0,0,8,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Border x:Name="StatusDot" Background="#525266" Width="6" Height="6" CornerRadius="3"
+                                    VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock x:Name="StatusText" Text="IDLE" FontSize="11" Foreground="#8F8FA3"
+                                       FontWeight="500" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                    <TextBlock x:Name="PidText" Text="" FontSize="10" Foreground="#525266"
+                               FontWeight="400" VerticalAlignment="Center" FontFamily="Consolas"/>
                 </StackPanel>
             </Grid>
         </Border>
 
-        <!-- Main -->
-        <Grid Grid.Row="1">
+        <!-- Main Content -->
+        <Grid Grid.Row="1" Margin="20,16,20,12">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="280"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Script Editor -->
-            <Border Grid.Column="0" Background="#ffffff" BorderBrush="#0d0d1a" BorderThickness="3" Margin="0,0,10,0">
+            <!-- Script Editor Card -->
+            <Border Grid.Column="0" Background="#12121E" BorderBrush="#262638" BorderThickness="1"
+                    CornerRadius="16" Margin="0,0,12,0">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="44"/>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="52"/>
+                        <RowDefinition Height="48"/>
                     </Grid.RowDefinitions>
 
-                    <Grid Grid.Row="0" Background="#00bcd4">
+                    <!-- Editor header -->
+                    <Grid Grid.Row="0" Background="#0C0C14">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition Width="32"/>
                         </Grid.ColumnDefinitions>
 
                         <TabControl x:Name="ScriptTabs" Grid.Column="0" BorderThickness="0"
                                     Background="Transparent" SelectedIndex="0"
-                                    VerticalAlignment="Center" Height="30">
+                                    VerticalAlignment="Center" Height="32">
                             <TabControl.Resources>
                                 <Style TargetType="TabPanel">
                                     <Setter Property="HorizontalAlignment" Value="Left"/>
                                 </Style>
                                 <Style TargetType="TabItem">
                                     <Setter Property="Background" Value="Transparent"/>
-                                    <Setter Property="Foreground" Value="#ccffffff"/>
+                                    <Setter Property="Foreground" Value="#525266"/>
                                     <Setter Property="BorderThickness" Value="0"/>
                                     <Setter Property="FontSize" Value="11"/>
-                                    <Setter Property="FontWeight" Value="Bold"/>
-                                    <Setter Property="Padding" Value="12,6"/>
+                                    <Setter Property="FontWeight" Value="500"/>
+                                    <Setter Property="Padding" Value="16,6"/>
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="TabItem">
                                                 <Border Name="border" Background="{TemplateBinding Background}"
-                                                        Padding="{TemplateBinding Padding}">
+                                                        Padding="{TemplateBinding Padding}"
+                                                        BorderBrush="#4D00B4" BorderThickness="0">
                                                     <ContentPresenter ContentSource="Header"
                                                                       HorizontalAlignment="Center"
                                                                       VerticalAlignment="Center"/>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsSelected" Value="True">
-                                                        <Setter TargetName="border" Property="Background" Value="#0d0d1a"/>
-                                                        <Setter TargetName="border" Property="BorderThickness" Value="0"/>
+                                                        <Setter TargetName="border" Property="BorderThickness" Value="0,0,0,2"/>
+                                                        <Setter Property="Foreground" Value="#EBEBF0"/>
                                                     </Trigger>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="border" Property="Background" Value="#00838f"/>
+                                                        <Setter TargetName="border" Property="Background" Value="#0A0A14"/>
+                                                        <Setter Property="Foreground" Value="#8F8FA3"/>
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -190,95 +344,105 @@
                             <TabItem Header="SCRIPTS"/>
                         </TabControl>
 
-                        <Button x:Name="ClearBtn" Grid.Column="2" Content="X" Width="26" Height="22"
-                                FontSize="10" FontWeight="Bold" Style="{StaticResource BrutalBtn}"
-                                Padding="0" Click="OnClear" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                        <Button x:Name="ClearBtn" Grid.Column="2" Content="X" Width="24" Height="24"
+                                FontSize="9" Style="{StaticResource BtnGhost}"
+                                Padding="0" Click="OnClear" VerticalAlignment="Center" Margin="0,0,4,0"/>
                     </Grid>
 
-                    <!-- Editor Panel -->
+                    <!-- Editor body -->
                     <ScrollViewer Grid.Row="1" x:Name="EditorPanel"
-                                  Background="#ffffff" BorderBrush="#0d0d1a" BorderThickness="0,3">
+                                  Background="#0C0C14" BorderThickness="0"
+                                  VerticalScrollBarVisibility="Auto">
+                        <ScrollViewer.Resources>
+                            <Style TargetType="ScrollBar" BasedOn="{StaticResource DarkScrollBar}"/>
+                        </ScrollViewer.Resources>
                         <TextBox x:Name="ScriptBox"
                                  AcceptsReturn="True" AcceptsTab="True"
                                  TextWrapping="NoWrap"
-                                 Background="#fafafa" Foreground="#0d0d1a"
-                                 BorderThickness="0" FontSize="13" FontFamily="Cascadia Code, JetBrains Mono, Consolas"
-                                 Padding="14,10" VerticalScrollBarVisibility="Hidden"
-                                 SelectionBrush="#00bcd4" SelectionOpacity="0.3"
-                                 CaretBrush="#00bcd4"/>
+                                 Background="#0C0C14" Foreground="#EBEBF0"
+                                 BorderThickness="0" FontSize="13" FontFamily="Consolas, Cascadia Code, JetBrains Mono"
+                                 Padding="16,10" VerticalScrollBarVisibility="Hidden"
+                                 SelectionBrush="#2D006A" SelectionOpacity="0.4"
+                                 CaretBrush="#7B3FE4"/>
                     </ScrollViewer>
 
-                    <!-- Scripts Panel (tabbed) -->
+                    <!-- Scripts panel -->
                     <ScrollViewer Grid.Row="1" x:Name="ScriptsPanel" Visibility="Collapsed"
-                                  Background="#fafafa" BorderBrush="#0d0d1a" BorderThickness="0,3"
+                                  Background="#0C0C14" BorderThickness="0"
                                   VerticalScrollBarVisibility="Auto">
+                        <ScrollViewer.Resources>
+                            <Style TargetType="ScrollBar" BasedOn="{StaticResource DarkScrollBar}"/>
+                        </ScrollViewer.Resources>
                         <StackPanel Margin="0">
-                            <Border Background="#ffffff" BorderBrush="#e0e0e0" BorderThickness="0,0,0,1" Padding="12,10">
+                            <Border Background="#0C0C14" BorderBrush="#262638" BorderThickness="0,0,0,1" Padding="16,10">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel VerticalAlignment="Center">
-                                        <TextBlock Text="DEFAULT SCRIPT" FontSize="11" FontWeight="ExtraBlack" Foreground="#0d0d1a"/>
-                                        <TextBlock Text="Basic test script" FontSize="9" Foreground="#9e9e9e"/>
+                                        <TextBlock Text="DEFAULT SCRIPT" FontSize="11" FontWeight="500" Foreground="#EBEBF0"/>
+                                        <TextBlock Text="Basic test script" FontSize="9" Foreground="#525266"/>
                                     </StackPanel>
-                                    <Button Grid.Column="1" Content="LOAD" Style="{StaticResource AccentBrutalBtn}"
-                                            Height="26" FontSize="8" Padding="10,0" FontWeight="ExtraBlack"
+                                    <Button Grid.Column="1" Content="LOAD" Style="{StaticResource BtnGhost}"
+                                            Height="26" FontSize="8"
                                             Tag="print('Hello from Elaina!')" Click="OnLoadScript"/>
                                 </Grid>
                             </Border>
-                            <Border Background="#ffffff" BorderBrush="#e0e0e0" BorderThickness="0,0,0,1" Padding="12,10">
+                            <Border Background="#0C0C14" BorderBrush="#262638" BorderThickness="0,0,0,1" Padding="16,10">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel VerticalAlignment="Center">
-                                        <TextBlock Text="INFINITE YIELD" FontSize="11" FontWeight="ExtraBlack" Foreground="#0d0d1a"/>
-                                        <TextBlock Text="Admin commands (placeholder)" FontSize="9" Foreground="#9e9e9e"/>
+                                        <TextBlock Text="INFINITE YIELD" FontSize="11" FontWeight="500" Foreground="#EBEBF0"/>
+                                        <TextBlock Text="Admin commands (placeholder)" FontSize="9" Foreground="#525266"/>
                                     </StackPanel>
-                                    <Button Grid.Column="1" Content="LOAD" Style="{StaticResource AccentBrutalBtn}"
-                                            Height="26" FontSize="8" Padding="10,0" FontWeight="ExtraBlack"
+                                    <Button Grid.Column="1" Content="LOAD" Style="{StaticResource BtnGhost}"
+                                            Height="26" FontSize="8"
                                             Tag="-- Infinite Yield placeholder" Click="OnLoadScript"/>
                                 </Grid>
                             </Border>
-                            <Border Background="#ffffff" BorderBrush="#e0e0e0" BorderThickness="0,0,0,1" Padding="12,10">
+                            <Border Background="#0C0C14" BorderBrush="#262638" BorderThickness="0,0,0,1" Padding="16,10">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel VerticalAlignment="Center">
-                                        <TextBlock Text="ESP / WALLHACK" FontSize="11" FontWeight="ExtraBlack" Foreground="#0d0d1a"/>
-                                        <TextBlock Text="Player ESP visual (placeholder)" FontSize="9" Foreground="#9e9e9e"/>
+                                        <TextBlock Text="ESP / WALLHACK" FontSize="11" FontWeight="500" Foreground="#EBEBF0"/>
+                                        <TextBlock Text="Player ESP visual (placeholder)" FontSize="9" Foreground="#525266"/>
                                     </StackPanel>
-                                    <Button Grid.Column="1" Content="LOAD" Style="{StaticResource AccentBrutalBtn}"
-                                            Height="26" FontSize="8" Padding="10,0" FontWeight="ExtraBlack"
+                                    <Button Grid.Column="1" Content="LOAD" Style="{StaticResource BtnGhost}"
+                                            Height="26" FontSize="8"
                                             Tag="-- ESP placeholder" Click="OnLoadScript"/>
                                 </Grid>
                             </Border>
                         </StackPanel>
                     </ScrollViewer>
 
-                    <Border Grid.Row="2" Background="#0d0d1a" Padding="10,0">
+                    <!-- Editor footer -->
+                    <Border Grid.Row="2" Background="#0C0C14" BorderBrush="#262638" BorderThickness="0,1,0,0"
+                            Padding="12,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="CTRL + ENTER" FontSize="11" Foreground="#616161" FontWeight="Bold" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="0" Text="CTRL + ENTER" FontSize="9" Foreground="#525266" FontWeight="400" VerticalAlignment="Center" FontFamily="Consolas"/>
                             <Button x:Name="ExecuteBtn" Grid.Column="1"
-                                    Content="EXECUTE" Style="{StaticResource AccentBrutalBtn}"
-                                    Height="32" FontSize="11" Padding="24,0" FontWeight="ExtraBlack"
+                                    Content="EXECUTE" Style="{StaticResource BtnSolid}"
+                                    Height="32" FontSize="10" Padding="24,0"
                                     Click="OnExecute" IsEnabled="False"/>
                         </Grid>
                     </Border>
                 </Grid>
             </Border>
 
-            <!-- Console Panel -->
-            <Border Grid.Column="1" Background="#ffffff" BorderBrush="#0d0d1a" BorderThickness="3">
+            <!-- Console Panel + Actions Card -->
+            <Border Grid.Column="1" Background="#12121E" BorderBrush="#262638" BorderThickness="1"
+                    CornerRadius="16">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="44"/>
@@ -286,46 +450,62 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <Grid Grid.Row="0" Background="#0d0d1a">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="CONSOLE" FontSize="12" FontWeight="ExtraBlack" Foreground="#ffffff" VerticalAlignment="Center" Margin="14,0,0,0"/>
-                        <Button x:Name="ClearConsoleBtn" Grid.Column="1" Content="X" Width="30" Height="24" FontSize="10" FontWeight="Bold" Style="{StaticResource BrutalBtn}" Padding="0" Click="OnClearConsole" Margin="0,0,10,0"/>
-                    </Grid>
+                    <!-- Console header -->
+                    <Border Grid.Row="0" Background="#0C0C14" BorderBrush="#262638" BorderThickness="0,0,0,1"
+                            CornerRadius="16,16,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="CONSOLE" FontSize="11" FontWeight="500"
+                                       Foreground="#EBEBF0" VerticalAlignment="Center" Margin="16,0,0,0"/>
+                            <Button x:Name="ClearConsoleBtn" Grid.Column="1" Content="X" Width="24" Height="24"
+                                    FontSize="9" Style="{StaticResource BtnGhost}" Padding="0" Click="OnClearConsole"
+                                    Margin="0,0,8,0"/>
+                        </Grid>
+                    </Border>
 
-                    <ScrollViewer Grid.Row="1" Background="#ffffff" BorderBrush="#0d0d1a" BorderThickness="0,3" VerticalScrollBarVisibility="Auto">
+                    <!-- Console body -->
+                    <ScrollViewer Grid.Row="1" Background="#0C0C14" BorderThickness="0"
+                                  VerticalScrollBarVisibility="Auto">
+                        <ScrollViewer.Resources>
+                            <Style TargetType="ScrollBar" BasedOn="{StaticResource DarkScrollBar}"/>
+                        </ScrollViewer.Resources>
                         <RichTextBox x:Name="ConsoleBox" IsReadOnly="True"
-                                     Background="#fafafa" BorderThickness="0"
-                                     FontSize="11.5" FontFamily="Cascadia Code, JetBrains Mono, Consolas"
-                                     Padding="12,8" VerticalScrollBarVisibility="Disabled">
+                                     Background="#0C0C14" BorderThickness="0"
+                                     FontSize="11" FontFamily="Consolas, Cascadia Code, JetBrains Mono"
+                                     Padding="16,8" VerticalScrollBarVisibility="Disabled"
+                                     Style="{StaticResource DarkRichTextBox}">
                             <FlowDocument>
                                 <Paragraph Margin="0" Padding="0">
-                                    <Run Text="[EL AINA] v1.0.0 ready" Foreground="#00bcd4" FontWeight="Bold"/>
+                                    <Run Text="[ELAINA] v1.0.0 ready" Foreground="#525266" FontWeight="400"/>
                                 </Paragraph>
                             </FlowDocument>
                         </RichTextBox>
                     </ScrollViewer>
 
-                    <StackPanel Grid.Row="2" Margin="10,10,10,12">
-                        <Button x:Name="AttachBtn" Content="ATTACH" Style="{StaticResource AccentBrutalBtn}" Height="34" FontSize="11" FontWeight="ExtraBlack" Click="OnAttach" Margin="0,0,0,8"/>
-                        <Button x:Name="InjectBtn" Content="INJECT UNC" Style="{StaticResource BrutalBtn}" Height="32" FontSize="11" FontWeight="Bold" Click="OnInject" IsEnabled="False" Margin="0,0,0,8"/>
-                        <Button x:Name="DetachBtn" Content="DETACH" Style="{StaticResource DangerBrutalBtn}" Height="32" FontSize="11" FontWeight="Bold" Click="OnDetach"/>
+                    <!-- Action buttons -->
+                    <StackPanel Grid.Row="2" Margin="16,12,16,16">
+                        <Button x:Name="InjectBtn" Content="INJECT" Style="{StaticResource BtnSolid}"
+                                Height="40" FontSize="11" FontWeight="600" Click="OnInject" Margin="0,0,0,8"/>
+                        <Button x:Name="DetachBtn" Content="DETACH" Style="{StaticResource BtnOutline}"
+                                Height="40" FontSize="11" Click="OnDetach" IsEnabled="False"/>
                     </StackPanel>
                 </Grid>
             </Border>
         </Grid>
 
         <!-- Footer -->
-        <Border Grid.Row="2" Background="#ffffff" BorderBrush="#0d0d1a" BorderThickness="3" Padding="14,6" Margin="0,14,0,0" Height="36">
+        <Border Grid.Row="2" Background="#0A0A14" BorderBrush="#262638" BorderThickness="0,1,0,0"
+                Padding="20,0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="READY" FontSize="11" Foreground="#757575" FontWeight="Bold" VerticalAlignment="Center"/>
-                <TextBlock Grid.Column="1" Text="X64  |  EL AINA V1.0" FontSize="10" Foreground="#00bcd4" FontWeight="Bold" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="0" Text="READY" FontSize="9" Foreground="#525266" FontWeight="400" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="1" Text="X64  |  ELAINA V1.0" FontSize="9" Foreground="#525266" FontWeight="400" VerticalAlignment="Center" FontFamily="Consolas"/>
             </Grid>
         </Border>
     </Grid>

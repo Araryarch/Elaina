@@ -1,4 +1,5 @@
 using System;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -9,11 +10,18 @@ namespace ElainaUI
 {
     public partial class MainWindow : Window
     {
+        private Timer _pollTimer;
+        private int _lastState = ElainaCore.IDLE;
+
         public MainWindow()
         {
             InitializeComponent();
             Log("Elaina initialized");
             ScriptBox.Focus();
+
+            _pollTimer = new Timer(1500);
+            _pollTimer.Elapsed += (_, _) => PollState();
+            _pollTimer.Start();
         }
 
         private void Log(string msg, Brush? color = null)
@@ -25,8 +33,8 @@ namespace ElainaUI
                 p.LineHeight = 1.2;
                 var run = new Run(msg)
                 {
-                    Foreground = color ?? new SolidColorBrush(Color.FromRgb(0xe0, 0xe0, 0xf0)),
-                    FontSize = 11.5
+                    Foreground = color ?? new SolidColorBrush(Color.FromRgb(0x88, 0x88, 0x88)),
+                    FontSize = 10.5
                 };
                 p.Inlines.Add(run);
                 ConsoleBox.Document.Blocks.Add(p);
@@ -36,77 +44,133 @@ namespace ElainaUI
 
         private void LogError(string msg)
         {
-            Log("Error: " + msg, new SolidColorBrush(Color.FromRgb(0xd5, 0x00, 0x00)));
+            Log("Error: " + msg, new SolidColorBrush(Color.FromRgb(0x88, 0x88, 0x88)));
         }
 
         private void LogOk(string msg)
         {
-            Log("OK: " + msg, new SolidColorBrush(Color.FromRgb(0x00, 0xc8, 0x53)));
+            Log("OK: " + msg, new SolidColorBrush(Color.FromRgb(0xaa, 0xaa, 0xaa)));
         }
 
         private void LogInfo(string msg)
         {
-            Log("-> " + msg, new SolidColorBrush(Color.FromRgb(0x00, 0xbc, 0xd4)));
+            Log("-> " + msg, new SolidColorBrush(Color.FromRgb(0x66, 0x66, 0x66)));
         }
 
-        private void UpdateStatus(string text, bool connected = false)
+        private void SetConnected(bool connected, int pid = 0)
         {
             Dispatcher.Invoke(() =>
             {
-                StatusText.Text = text;
+                StatusDot.Background = connected
+                    ? new SolidColorBrush(Color.FromRgb(0x88, 0x88, 0x88))
+                    : new SolidColorBrush(Color.FromRgb(0x55, 0x55, 0x55));
                 StatusText.Foreground = connected
-                    ? new SolidColorBrush(Color.FromRgb(0x00, 0xc8, 0x53))
-                    : new SolidColorBrush(Color.FromRgb(0x0d, 0x0d, 0x1a));
+                    ? new SolidColorBrush(Color.FromRgb(0xaa, 0xaa, 0xaa))
+                    : new SolidColorBrush(Color.FromRgb(0x77, 0x77, 0x77));
+                StatusText.Text = connected ? "CONNECTED" : "IDLE";
+                PidText.Text = pid > 0 ? pid.ToString() : "";
             });
         }
 
-        private void OnAttach(object sender, RoutedEventArgs e)
+        private void SyncUi()
+        {
+            var state = ElainaCore.ElainaGetState();
+            var pid = ElainaCore.ElainaGetPid();
+
+            Dispatcher.Invoke(() =>
+            {
+                switch (state)
+                {
+                    case ElainaCore.IDLE:
+                        InjectBtn.IsEnabled = true;
+                        InjectBtn.Content = "INJECT";
+                        ExecuteBtn.IsEnabled = false;
+                        DetachBtn.IsEnabled = false;
+                        SetConnected(false);
+                        break;
+
+                    case ElainaCore.ATTACHED:
+                        InjectBtn.IsEnabled = true;
+                        InjectBtn.Content = "INJECT";
+                        ExecuteBtn.IsEnabled = false;
+                        DetachBtn.IsEnabled = true;
+                        SetConnected(true, pid);
+                        break;
+
+                    case ElainaCore.INJECTED:
+                        InjectBtn.IsEnabled = false;
+                        InjectBtn.Content = "INJECTED";
+                        ExecuteBtn.IsEnabled = true;
+                        DetachBtn.IsEnabled = true;
+                        SetConnected(true, pid);
+                        break;
+
+                    case ElainaCore.ERROR:
+                        InjectBtn.IsEnabled = true;
+                        InjectBtn.Content = "INJECT";
+                        ExecuteBtn.IsEnabled = false;
+                        DetachBtn.IsEnabled = false;
+                        SetConnected(false);
+                        break;
+                }
+            });
+        }
+
+        private void PollState()
+        {
+            var state = ElainaCore.ElainaGetState();
+            if (state != _lastState)
+            {
+                _lastState = state;
+                SyncUi();
+            }
+        }
+
+        private void OnInject(object sender, RoutedEventArgs e)
         {
             LogInfo("Attaching to Roblox...");
-            if (ElainaCore.ElainaAttach())
+            if (!ElainaCore.ElainaAttach())
             {
-                AttachBtn.IsEnabled = false;
-                ExecuteBtn.IsEnabled = true;
-                InjectBtn.IsEnabled = true;
-                PidText.Text = ElainaCore.GetStatus().Replace("Attached to PID ", "");
-                LogOk("Attached successfully");
-                UpdateStatus("Connected", true);
+                LogError("Roblox not running");
+                SyncUi();
+                return;
             }
-            else
+
+            var pid = ElainaCore.ElainaGetPid();
+            LogOk($"Attached (PID {pid})");
+
+            LogInfo("Injecting UNC API...");
+            if (!ElainaCore.ElainaInject())
             {
-                LogError("Failed to attach - Roblox not found");
-                UpdateStatus(ElainaCore.GetStatus());
+                LogError("Injection failed");
+                ElainaCore.ElainaDetach();
+                _lastState = ElainaCore.IDLE;
+                SyncUi();
+                return;
             }
+
+            LogOk("Injected — ready to execute");
+            _lastState = ElainaCore.INJECTED;
+            SyncUi();
         }
 
         private void OnDetach(object sender, RoutedEventArgs e)
         {
             ElainaCore.ElainaDetach();
-            AttachBtn.IsEnabled = true;
-            ExecuteBtn.IsEnabled = false;
-            InjectBtn.IsEnabled = false;
-            PidText.Text = "";
-            UpdateStatus("Detached");
-            LogInfo("Detached from Roblox");
-        }
-
-        private void OnInject(object sender, RoutedEventArgs e)
-        {
-            LogInfo("Injecting UNC API...");
-            if (ElainaCore.ElainaInject())
-            {
-                LogOk("UNC API injected");
-                ScriptBox.Text = "-- UNC API ready";
-            }
-            else
-            {
-                LogError("Injection failed");
-            }
-            UpdateStatus(ElainaCore.GetStatus());
+            _lastState = ElainaCore.IDLE;
+            SyncUi();
+            LogInfo("Detached");
         }
 
         private void DoExecute()
         {
+            var state = ElainaCore.ElainaGetState();
+            if (state < ElainaCore.INJECTED)
+            {
+                LogError("Not injected");
+                return;
+            }
+
             var script = ScriptBox.Text;
             if (string.IsNullOrWhiteSpace(script))
             {
@@ -118,9 +182,7 @@ namespace ElainaUI
             if (ElainaCore.ElainaExecute(script))
                 LogOk("Script executed");
             else
-                LogError("Execution failed: " + ElainaCore.GetStatus());
-
-            UpdateStatus(ElainaCore.GetStatus());
+                LogError("Execution failed");
         }
 
         private void OnExecute(object sender, RoutedEventArgs e) => DoExecute();

@@ -3,12 +3,14 @@
 #include "service/ExecutionService.h"
 #include "service/NetworkService.h"
 #include "execution/Injector.h"
+#include "process/Process.h"
 #include "core/Log.h"
 #include <cstring>
 
 static Session g_session;
 static NetworkService g_network;
-static std::string g_status = "Idle";
+static int g_state = ELAINA_IDLE;
+static int g_pid = 0;
 
 static std::string HandleRequest(const std::string& method, const std::string& path, const std::string& body) {
     if (path == "/compile" && method == "POST") {
@@ -32,54 +34,58 @@ extern "C" {
 
 bool __stdcall ElainaAttach() {
     if (!g_session.Attach()) {
-        g_status = "Failed to attach";
+        g_state = ELAINA_ERROR;
+        g_pid = 0;
         return false;
     }
-    g_status = "Attached to PID " + std::to_string(g_session.Handle().pid);
+    g_pid = g_session.Handle().pid;
+    g_state = ELAINA_ATTACHED;
     return true;
 }
 
 void __stdcall ElainaDetach() {
     g_network.Stop();
     g_session.Detach();
-    g_status = "Detached";
+    g_state = ELAINA_IDLE;
+    g_pid = 0;
 }
 
 bool __stdcall ElainaExecute(const char* script) {
-    if (!g_session.IsAttached()) {
-        g_status = "Not attached";
-        return false;
-    }
-    if (!ExecutionService::Execute(g_session, script)) {
-        g_status = "Execution failed";
-        return false;
-    }
-    g_status = "Executed OK";
+    if (g_state < ELAINA_ATTACHED) return false;
+    if (!ExecutionService::Execute(g_session, script)) return false;
     return true;
 }
 
-const char* __stdcall ElainaGetStatus() {
-    return g_status.c_str();
+int __stdcall ElainaGetState() {
+    if (g_state >= ELAINA_ATTACHED && g_pid && !Process::IsRunning(g_pid)) {
+        g_session.Detach();
+        g_state = ELAINA_IDLE;
+        g_pid = 0;
+    }
+    return g_state;
+}
+
+int __stdcall ElainaGetPid() {
+    return g_pid;
 }
 
 bool __stdcall ElainaInject() {
+    if (g_state != ELAINA_ATTACHED) return false;
     if (!ExecutionService::InjectUnc(g_session)) {
-        g_status = "UNC inject failed";
+        g_state = ELAINA_ERROR;
         return false;
     }
-    g_status = "UNC injected";
+    g_state = ELAINA_INJECTED;
     return true;
 }
 
 void __stdcall ElainaStartServer(int port) {
     g_network.SetHandler(HandleRequest);
     g_network.Start(port);
-    g_status = "Server running on port " + std::to_string(port);
 }
 
 void __stdcall ElainaStopServer() {
     g_network.Stop();
-    g_status = "Server stopped";
 }
 
 } // extern "C"

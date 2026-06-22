@@ -7,6 +7,11 @@ namespace ElainaUI
 {
     static class ElainaCore
     {
+        public const int IDLE = 0;
+        public const int ATTACHED = 1;
+        public const int INJECTED = 2;
+        public const int ERROR = -1;
+
         static ElainaCore()
         {
             var assembly = typeof(ElainaCore).Assembly;
@@ -39,7 +44,10 @@ namespace ElainaUI
         public static extern bool ElainaExecute([MarshalAs(UnmanagedType.LPStr)] string script);
 
         [DllImport("Elaina.dll", CallingConvention = CallingConvention.StdCall)]
-        public static extern IntPtr ElainaGetStatus();
+        public static extern int ElainaGetState();
+
+        [DllImport("Elaina.dll", CallingConvention = CallingConvention.StdCall)]
+        public static extern int ElainaGetPid();
 
         [DllImport("Elaina.dll", CallingConvention = CallingConvention.StdCall)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -50,10 +58,5 @@ namespace ElainaUI
 
         [DllImport("Elaina.dll", CallingConvention = CallingConvention.StdCall)]
         public static extern void ElainaStopServer();
-
-        public static string GetStatus()
-        {
-            return Marshal.PtrToStringAnsi(ElainaGetStatus()) ?? "";
-        }
     }
 }

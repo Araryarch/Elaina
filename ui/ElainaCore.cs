@@ -62,9 +62,18 @@ namespace ElainaUI
         [DllImport("Elaina.dll", CallingConvention = CallingConvention.StdCall)]
         public static extern IntPtr ElainaDiagnose();
 
+        [DllImport("Elaina.dll", CallingConvention = CallingConvention.StdCall)]
+        public static extern IntPtr ElainaGetLastError();
+
         public static string Diagnose()
         {
             var ptr = ElainaDiagnose();
+            return Marshal.PtrToStringAnsi(ptr) ?? "(null)";
+        }
+
+        public static string GetLastError()
+        {
+            var ptr = ElainaGetLastError();
             return Marshal.PtrToStringAnsi(ptr) ?? "(null)";
         }
     }

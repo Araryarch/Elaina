@@ -440,7 +440,7 @@
                 </Grid>
             </Border>
 
-            <!-- Console Panel + Actions Card -->
+            <!-- Right Panel: Console / Terminal + Actions -->
             <Border Grid.Column="1" Background="#12121E" BorderBrush="#262638" BorderThickness="1"
                     CornerRadius="16">
                 <Grid>
@@ -450,7 +450,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Console header -->
+                    <!-- Tab header -->
                     <Border Grid.Row="0" Background="#0C0C14" BorderBrush="#262638" BorderThickness="0,0,0,1"
                             CornerRadius="16,16,0,0">
                         <Grid>
@@ -458,17 +458,57 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="CONSOLE" FontSize="11" FontWeight="500"
-                                       Foreground="#EBEBF0" VerticalAlignment="Center" Margin="16,0,0,0"/>
-                            <Button x:Name="ClearConsoleBtn" Grid.Column="1" Content="X" Width="24" Height="24"
-                                    FontSize="9" Style="{StaticResource BtnGhost}" Padding="0" Click="OnClearConsole"
+                            <TabControl x:Name="RightTabs" Grid.Column="0" BorderThickness="0"
+                                        Background="Transparent" SelectedIndex="0"
+                                        VerticalAlignment="Center" Height="32" Margin="8,0,0,0">
+                                <TabControl.Resources>
+                                    <Style TargetType="TabPanel">
+                                        <Setter Property="HorizontalAlignment" Value="Left"/>
+                                    </Style>
+                                    <Style TargetType="TabItem">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="Foreground" Value="#525266"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Setter Property="FontSize" Value="10"/>
+                                        <Setter Property="FontWeight" Value="500"/>
+                                        <Setter Property="Padding" Value="12,6"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="TabItem">
+                                                    <Border Name="border" Background="{TemplateBinding Background}"
+                                                            Padding="{TemplateBinding Padding}"
+                                                            BorderBrush="#4D00B4" BorderThickness="0">
+                                                        <ContentPresenter ContentSource="Header"
+                                                                          HorizontalAlignment="Center"
+                                                                          VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsSelected" Value="True">
+                                                            <Setter TargetName="border" Property="BorderThickness" Value="0,0,0,2"/>
+                                                            <Setter Property="Foreground" Value="#EBEBF0"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="border" Property="Background" Value="#0A0A14"/>
+                                                            <Setter Property="Foreground" Value="#8F8FA3"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </TabControl.Resources>
+                                <TabItem Header="CONSOLE"/>
+                                <TabItem Header="TERMINAL"/>
+                            </TabControl>
+                            <Button x:Name="ClearRightBtn" Grid.Column="1" Content="X" Width="24" Height="24"
+                                    FontSize="9" Style="{StaticResource BtnGhost}" Padding="0" Click="OnClearRight"
                                     Margin="0,0,8,0"/>
                         </Grid>
                     </Border>
 
                     <!-- Console body -->
-                    <ScrollViewer Grid.Row="1" Background="#0C0C14" BorderThickness="0"
-                                  VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer Grid.Row="1" x:Name="ConsolePanel" Background="#0C0C14" BorderThickness="0"
+                                  VerticalScrollBarVisibility="Auto" Visibility="Visible">
                         <ScrollViewer.Resources>
                             <Style TargetType="ScrollBar" BasedOn="{StaticResource DarkScrollBar}"/>
                         </ScrollViewer.Resources>
@@ -484,6 +524,46 @@
                             </FlowDocument>
                         </RichTextBox>
                     </ScrollViewer>
+
+                    <!-- Terminal body -->
+                    <Grid Grid.Row="1" x:Name="TerminalPanel" Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <ScrollViewer Grid.Row="0" Background="#0C0C14" BorderThickness="0"
+                                      VerticalScrollBarVisibility="Auto">
+                            <ScrollViewer.Resources>
+                                <Style TargetType="ScrollBar" BasedOn="{StaticResource DarkScrollBar}"/>
+                            </ScrollViewer.Resources>
+                            <RichTextBox x:Name="TerminalBox" IsReadOnly="True"
+                                         Background="#0C0C14" BorderThickness="0"
+                                         FontSize="11" FontFamily="Consolas, Cascadia Code, JetBrains Mono"
+                                         Padding="16,8" VerticalScrollBarVisibility="Disabled"
+                                         Style="{StaticResource DarkRichTextBox}">
+                                <FlowDocument>
+                                    <Paragraph Margin="0" Padding="0">
+                                        <Run Text="[TERMINAL] press Enter to start" Foreground="#525266" FontWeight="400"/>
+                                    </Paragraph>
+                                </FlowDocument>
+                            </RichTextBox>
+                        </ScrollViewer>
+                        <Border Grid.Row="1" Background="#0A0A14" BorderBrush="#262638" BorderThickness="0,1,0,0">
+                            <Grid Margin="12,6,12,6" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text=">" FontFamily="Consolas" FontSize="11"
+                                           Foreground="#4D00B4" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBox x:Name="TerminalInput" Grid.Column="1"
+                                         Background="Transparent" Foreground="#EBEBF0"
+                                         BorderThickness="0" FontSize="11" FontFamily="Consolas"
+                                         CaretBrush="#7B3FE4" IsTabStop="True"
+                                         KeyDown="OnTerminalKeyDown"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
 
                     <!-- Action buttons -->
                     <StackPanel Grid.Row="2" Margin="16,12,16,16">

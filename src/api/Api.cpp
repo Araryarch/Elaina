@@ -12,6 +12,8 @@ static Session g_session;
 static NetworkService g_network;
 static int g_state = ELAINA_IDLE;
 static int g_pid = 0;
+static std::string g_lastError;
+static std::string g_lastDiag;
 
 static std::string HandleRequest(const std::string& method, const std::string& path, const std::string& body) {
     if (path == "/compile" && method == "POST") {
@@ -36,14 +38,17 @@ extern "C" {
 bool __stdcall ElainaAttach() {
     try {
         if (!g_session.Attach()) {
+            g_lastError = "Attach failed: no Roblox process found";
             g_state = ELAINA_ERROR;
             g_pid = 0;
             return false;
         }
         g_pid = g_session.Handle().pid;
         g_state = ELAINA_ATTACHED;
+        g_lastError.clear();
         return true;
     } catch (const std::exception& e) {
+        g_lastError = std::string("Attach exception: ") + e.what();
         Log::Error("ElainaAttach exception: %s", e.what());
         g_state = ELAINA_ERROR;
         g_pid = 0;
@@ -64,10 +69,18 @@ void __stdcall ElainaDetach() {
 
 bool __stdcall ElainaExecute(const char* script) {
     try {
-        if (g_state < ELAINA_ATTACHED) return false;
-        if (!ExecutionService::Execute(g_session, script)) return false;
+        if (g_state < ELAINA_ATTACHED) {
+            g_lastError = "Not attached";
+            return false;
+        }
+        if (!ExecutionService::Execute(g_session, script)) {
+            g_lastError = "ExecutionService::Execute failed";
+            return false;
+        }
+        g_lastError.clear();
         return true;
     } catch (const std::exception& e) {
+        g_lastError = std::string("Execute exception: ") + e.what();
         Log::Error("ElainaExecute exception: %s", e.what());
         g_state = ELAINA_ERROR;
         return false;
@@ -94,14 +107,20 @@ int __stdcall ElainaGetPid() {
 
 bool __stdcall ElainaInject() {
     try {
-        if (g_state != ELAINA_ATTACHED) return false;
+        if (g_state != ELAINA_ATTACHED) {
+            g_lastError = "Not in ATTACHED state";
+            return false;
+        }
         if (!ExecutionService::InjectUnc(g_session)) {
+            g_lastError = "Injection failed — see diagnose output";
             g_state = ELAINA_ERROR;
             return false;
         }
         g_state = ELAINA_INJECTED;
+        g_lastError.clear();
         return true;
     } catch (const std::exception& e) {
+        g_lastError = std::string("Inject exception: ") + e.what();
         Log::Error("ElainaInject exception: %s", e.what());
         g_state = ELAINA_ERROR;
         return false;
@@ -127,18 +146,21 @@ void __stdcall ElainaStopServer() {
 
 const char* __stdcall ElainaDiagnose() {
     try {
-        static std::string diagResult;
         if (!g_session.IsAttached()) {
-            diagResult = "Not attached. Call ElainaAttach() first.";
-            return diagResult.c_str();
+            g_lastDiag = "Not attached. Call ElainaAttach() first.";
+            return g_lastDiag.c_str();
         }
-        diagResult = Injector::Diagnose(g_session.Mem(), g_session.Tree());
-        return diagResult.c_str();
+        g_lastDiag = Injector::Diagnose(g_session.Mem(), g_session.Tree());
+        return g_lastDiag.c_str();
     } catch (const std::exception& e) {
         Log::Error("ElainaDiagnose exception: %s", e.what());
-        static std::string err = std::string("Exception: ") + e.what();
-        return err.c_str();
+        g_lastDiag = std::string("Exception: ") + e.what();
+        return g_lastDiag.c_str();
     }
+}
+
+const char* __stdcall ElainaGetLastError() {
+    return g_lastError.c_str();
 }
 
 } // extern "C"

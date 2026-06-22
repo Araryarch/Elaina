@@ -18,4 +18,5 @@ extern "C" {
     __declspec(dllexport) void __stdcall ElainaStartServer(int port);
     __declspec(dllexport) void __stdcall ElainaStopServer();
     __declspec(dllexport) const char* __stdcall ElainaDiagnose();
+    __declspec(dllexport) const char* __stdcall ElainaGetLastError();
 }

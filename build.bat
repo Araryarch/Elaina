@@ -1,23 +1,26 @@
 @echo off
-REM Elaina Executor - CMake Build Script
+REM Syntax Executor - Build Script
 REM Requires: Visual Studio 2022 (v143), .NET 8 SDK, CMake 3.10+
+REM
+REM Commands:
+REM   build.bat          - Quick C++ DLL build only
+REM   build.bat debug    - Debug build
+REM   dist.bat           - Full hybrid build (DLL + UI) into dist/
 
 echo ========================================
-echo  Elaina Executor - Build Script
+echo  Syntax Executor - Build Script
 echo ========================================
+echo.
+echo Commands:
+echo   build.bat          - Build C++ DLL only (quick)
+echo   build.bat debug    - Debug build
+echo   dist.bat           - Full hybrid build (DLL + UI) into dist/
 echo.
 
 where cmake >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo [!] CMake not found in PATH.
     echo [!] Install CMake or run from Visual Studio Developer Command Prompt.
-    pause
-    exit /b 1
-)
-
-where dotnet >nul 2>&1
-if %ERRORLEVEL% NEQ 0 (
-    echo [!] dotnet not found. Install .NET 8 SDK.
     pause
     exit /b 1
 )
@@ -30,43 +33,29 @@ echo.
 
 REM Generate CMake build
 if not exist "build" mkdir build
-cd build
+pushd build
 echo [*] Configuring CMake...
 cmake .. -A x64 -DCMAKE_BUILD_TYPE=%CONFIG%
 if %ERRORLEVEL% NEQ 0 (
     echo [-] CMake configuration failed!
-    cd ..
+    popd
     pause
     exit /b 1
 )
 
-echo [*] Building Elaina DLL...
+echo [*] Building SyntaxAPI.dll...
 cmake --build . --config %CONFIG%
 if %ERRORLEVEL% NEQ 0 (
     echo [-] C++ build failed!
-    cd ..
+    popd
     pause
     exit /b 1
 )
-echo [+] Elaina.dll built successfully.
-cd ..
-
-echo [*] Building C# WPF UI...
-dotnet build ui\ElainaUI.csproj -c %CONFIG%
-if %ERRORLEVEL% NEQ 0 (
-    echo [-] UI build failed!
-    pause
-    exit /b 1
-)
-echo [+] UI built successfully.
-
+popd
+echo [+] SyntaxAPI.dll built successfully.
 echo.
-echo ========================================
-echo  Build Complete!
-echo ========================================
+echo Output: build\%CONFIG%\SyntaxAPI.dll
 echo.
-echo Output:
-echo   build\%CONFIG%\Elaina.dll
-echo   ui\bin\%CONFIG%\net8.0-windows\Elaina Executor.exe
+echo For full hybrid build (DLL + UI packaged), run: dist.bat
 echo.
 pause

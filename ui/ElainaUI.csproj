@@ -7,9 +7,11 @@
     <Nullable>enable</Nullable>
     <AssemblyName>Elaina-Executor</AssemblyName>
     <RootNamespace>ElainaUI</RootNamespace>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>false</SelfContained>
   </PropertyGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\build\Elaina.dll" Link="Elaina.dll">
+    <EmbeddedResource Include="..\build\Release\SyntaxAPI.dll" Link="SyntaxAPI.dll">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

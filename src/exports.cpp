@@ -42,11 +42,11 @@ std::string InternalReadString(HANDLE h, uintptr_t address) {
 
 extern "C" {
 
-SYNTAX_API bool __stdcall Initialize() {
+ELAINA_API bool __stdcall Initialize() {
     return Syscall::Initialize();
 }
 
-SYNTAX_API DWORD __stdcall FindRobloxProcess() {
+ELAINA_API DWORD __stdcall FindRobloxProcess() {
     auto pids = ProcessScanner::FindRobloxProcesses();
     if (pids.empty()) return 0;
     if (pids.size() == 1) return pids[0];
@@ -77,7 +77,7 @@ SYNTAX_API DWORD __stdcall FindRobloxProcess() {
     return bestPid ? bestPid : pids[0];
 }
 
-SYNTAX_API bool __stdcall Connect(DWORD pid) {
+ELAINA_API bool __stdcall Connect(DWORD pid) {
     gCore = ProcessScanner::Connect(pid);
     if (gCore.has_value()) {
         ScriptExecutor::SetRobloxPid(pid);
@@ -96,7 +96,7 @@ SYNTAX_API bool __stdcall Connect(DWORD pid) {
     return gCore.has_value();
 }
 
-SYNTAX_API void __stdcall Disconnect() {
+ELAINA_API void __stdcall Disconnect() {
     std::cout << "[API] Disconnect called — clearing session\n" << std::flush;
     gCore.reset();
     gDataModel = 0;
@@ -115,11 +115,11 @@ void CleanupSession() {
 
 extern "C" {
 
-SYNTAX_API DWORD __stdcall GetRobloxPid() {
+ELAINA_API DWORD __stdcall GetRobloxPid() {
     return (gCore && gCore->pid) ? gCore->pid : 0;
 }
 
-SYNTAX_API void __stdcall RedirConsole() {
+ELAINA_API void __stdcall RedirConsole() {
     // Attempt to sync with whatever console is available
     FreeConsole();
     if (AttachConsole(ATTACH_PARENT_PROCESS) || AllocConsole()) {
@@ -136,7 +136,7 @@ SYNTAX_API void __stdcall RedirConsole() {
     }
 }
 
-SYNTAX_API uintptr_t __stdcall GetDataModel() {
+ELAINA_API uintptr_t __stdcall GetDataModel() {
     if (!gCore || !gCore->handle) { std::cout << "[DM] No core/handle\n"; return 0; }
     if (gDataModel) return gDataModel;
 
@@ -197,7 +197,7 @@ SYNTAX_API uintptr_t __stdcall GetDataModel() {
     return 0;
 }
 
-SYNTAX_API int __stdcall GetJobCount() {
+ELAINA_API int __stdcall GetJobCount() {
     if (!gCore || !gCore->handle) return -1;
     HANDLE h = gCore->handle;
     uintptr_t base = gCore->baseAddress;
@@ -208,7 +208,7 @@ SYNTAX_API int __stdcall GetJobCount() {
     return (int)((jE - jS) / 8);
 }
 
-SYNTAX_API int __stdcall ExecuteScript(const char* source, int sourceLen) {
+ELAINA_API int __stdcall ExecuteScript(const char* source, int sourceLen) {
     if (!gCore || !gCore->handle) {
         gLastError = "Not connected to Roblox";
         return ScriptExecutor::ERR_NOT_CONNECTED;
@@ -246,7 +246,7 @@ SYNTAX_API int __stdcall ExecuteScript(const char* source, int sourceLen) {
     return ScriptExecutor::Execute(gCore->handle, gCore->baseAddress, gDataModel, src, gLastError);
 }
 
-SYNTAX_API int __stdcall GetLastExecError(char* buffer, int bufLen) {
+ELAINA_API int __stdcall GetLastExecError(char* buffer, int bufLen) {
     if (!buffer || bufLen <= 0) return 0;
     int copyLen = (int)std::min((size_t)bufLen - 1, gLastError.size());
     memcpy(buffer, gLastError.c_str(), copyLen);
@@ -254,17 +254,17 @@ SYNTAX_API int __stdcall GetLastExecError(char* buffer, int bufLen) {
     return copyLen;
 }
 
-SYNTAX_API bool __stdcall ReadMemory(uintptr_t address, void* buffer, size_t size) {
+ELAINA_API bool __stdcall ReadMemory(uintptr_t address, void* buffer, size_t size) {
     if (!gCore || !gCore->handle) return false;
     return ProcessScanner::ReadMemory(gCore->handle, address, buffer, size);
 }
 
-SYNTAX_API bool __stdcall WriteMemory(uintptr_t address, const void* buffer, size_t size) {
+ELAINA_API bool __stdcall WriteMemory(uintptr_t address, const void* buffer, size_t size) {
     if (!gCore || !gCore->handle) return false;
     return ProcessScanner::WriteMemory(gCore->handle, address, buffer, size);
 }
 
-SYNTAX_API bool __stdcall GetClientInfo(char* buffer, int maxSize) {
+ELAINA_API bool __stdcall GetClientInfo(char* buffer, int maxSize) {
     if (!gCore || !gCore->handle || !gDataModel) return false;
     HANDLE h = gCore->handle;
 

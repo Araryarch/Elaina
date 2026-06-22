@@ -1,5 +1,5 @@
 @echo off
-REM Syntax Executor - Build Script
+REM Elaina - Build Script
 REM Requires: Visual Studio 2022 (v143), .NET 8 SDK, CMake 3.10+
 REM
 REM Commands:
@@ -8,7 +8,7 @@ REM   build.bat debug    - Debug build
 REM   dist.bat           - Full hybrid build (DLL + UI) into dist/
 
 echo ========================================
-echo  Syntax Executor - Build Script
+echo  Elaina - Build Script
 echo ========================================
 echo.
 echo Commands:
@@ -43,7 +43,7 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
-echo [*] Building SyntaxAPI.dll...
+echo [*] Building Elaina.dll...
 cmake --build . --config %CONFIG%
 if %ERRORLEVEL% NEQ 0 (
     echo [-] C++ build failed!
@@ -52,9 +52,9 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 popd
-echo [+] SyntaxAPI.dll built successfully.
+echo [+] Elaina.dll built successfully.
 echo.
-echo Output: build\%CONFIG%\SyntaxAPI.dll
+echo Output: build\%CONFIG%\Elaina.dll
 echo.
 echo For full hybrid build (DLL + UI packaged), run: dist.bat
 echo.

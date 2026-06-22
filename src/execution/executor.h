@@ -66,7 +66,7 @@ local HttpService = game:FindService("HttpService")
 local CoreGui = game:GetService("CoreGui")
 
 local SERVER = "http://127.0.0.1:9753"
-local EXEC_NAME = "Syntax"
+local EXEC_NAME = "Elaina"
 
 -- Clean up previous session if any
 local existing = CoreGui:FindFirstChild(EXEC_NAME)
@@ -89,7 +89,7 @@ lsContainer.Parent = container
 task.spawn(function()
     pcall(function()
         game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = EXEC_NAME .. " Executor",
+            Title = "Elaina Executor",
             Text = "Successfully attached to game!",
             Icon = "rbxassetid://118289455769601",
             Duration = 10,
@@ -208,7 +208,7 @@ function Syntax.request(options)
 
     local reqHeaders = options.Headers or {}
     if not reqHeaders["User-Agent"] and not reqHeaders["user-agent"] then
-        reqHeaders["User-Agent"] = "Syntax"
+        reqHeaders["User-Agent"] = "Elaina"
     end
 
     local result = SendRequest({
@@ -251,8 +251,8 @@ end
 
 function Syntax.getgenv() return genv end
 function Syntax.getrenv() return getfenv(0) end
-function Syntax.identifyexecutor() return "Syntax", "2.0.0" end
-function Syntax.getexecutorname() return "Syntax" end
+function Syntax.identifyexecutor() return "Elaina", "2.0.0" end
+function Syntax.getexecutorname() return "Elaina" end
 function Syntax.getidentity() return 8 end
 function Syntax.getthreadidentity() return 8 end
 function Syntax.setthreadidentity(n) end
@@ -422,8 +422,8 @@ public:
         // Phase 1: First execution — inject init script via SpoofWith
         if (!sInjected) {
             // Check for existing session recovery
-            if (sCachedCoreGui && rblx::FindChildByName(hProcess, sCachedCoreGui, "Syntax")) {
-                std::cout << "[EXEC] Existing Syntax session found in CoreGui — recovering...\n";
+            if (sCachedCoreGui && rblx::FindChildByName(hProcess, sCachedCoreGui, "Elaina")) {
+                std::cout << "[EXEC] Existing Elaina session found in CoreGui — recovering...\n";
                 sInjected = true;
             }
 
@@ -615,7 +615,7 @@ private:
         std::cout << "[INJECT-" << label << "] Waiting for init signal (Elaina folder in CoreGui)...\n";
         bool signaled = false;
         for (int i = 0; i < 40; i++) { // Max 4 seconds (40 * 100ms)
-            if (sCachedCoreGui && rblx::FindChildByName(hProcess, sCachedCoreGui, "Syntax")) {
+            if (sCachedCoreGui && rblx::FindChildByName(hProcess, sCachedCoreGui, "Elaina")) {
                 signaled = true;
                 break;
             }

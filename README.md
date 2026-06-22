@@ -1,8 +1,20 @@
 # Elaina Executor
 
-> **EDUCATIONAL PURPOSE ONLY** — This project is a demonstration of various Windows internals concepts (direct syscalls, external memory manipulation, PE parsing, Luau bytecode compilation) and is **NOT** intended for actual use against Roblox or any other game/platform.
-
-**This project is not 100% complete. It provides only a high-level overview / proof of concept of the architecture described below.** Many components are stubbed or incomplete (SSN resolver, trigger require, offset values are outdated, etc.).
+> ⚠️ **THIS PROJECT IS STRICTLY FOR EDUCATIONAL PURPOSES ONLY** ⚠️
+>
+> Elaina Executor is a **proof-of-concept** demonstrating Windows internals concepts such as direct syscalls, external memory manipulation, PE parsing, and Luau bytecode compilation. It is **NOT** intended, designed, or authorized for:
+>
+> - Actual use against Roblox, any other game, or any third-party platform
+> - Cheating, exploiting, hacking, or gaining unfair advantages in any game
+> - Any use that violates Roblox's Terms of Service or any other platform's terms
+>
+> **By using, viewing, or distributing this code, you acknowledge:**
+> - This project is for **educational and research purposes only**
+> - You will **not** use this software against Roblox or any other platform
+> - The author(s) assume **no liability** for any misuse of this code
+> - You are responsible for complying with all applicable laws and terms of service
+>
+> **This project is not 100% complete.** It provides only a high-level overview / proof of concept of the architecture described below. Many components are stubbed or incomplete (SSN resolver, trigger require, offset values are outdated, etc.).
 
 ---
 

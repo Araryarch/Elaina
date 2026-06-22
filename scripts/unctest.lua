@@ -1,4 +1,4 @@
--- Syntax UNC Test Suite
+-- Elaina UNC Test Suite
 -- Load with executor and run to test all UNC functions
 -- Reports pass/fail for each function with overall score
 
@@ -52,7 +52,7 @@ end)
 newTest("Core", "identifyexecutor returns (string, string)", function()
     local name, ver = identifyexecutor()
     if type(name) == "string" and type(ver) == "string" then
-        return ok("Syntax/" .. ver)
+        return ok("Elaina/" .. ver)
     end
     return fail(string.format("got %s, %s", type(name), type(ver)))
 end)
@@ -1082,7 +1082,7 @@ local function buildGUI()
     title.Size = UDim2.new(1, -20, 1, 0)
     title.Position = UDim2.new(0, 15, 0, 0)
     title.BackgroundTransparency = 1
-    title.Text = "Syntax UNC Test Suite"
+    title.Text = "Elaina UNC Test Suite"
     title.TextColor3 = Color3.fromRGB(220, 220, 255)
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.Font = Enum.Font.GothamBold

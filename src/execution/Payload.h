@@ -41,7 +41,7 @@ local function sIN(cn,p)if cn=="Player"and fId<6 then error("Security limits",2)
 genv.Instance=setmetatable({},{__index=function(_,k)if k=="new"then return sIN end;return Instance[k]end})
 genv.savegame=genv.saveinstance
 genv.setfflag=function(x,y)return game:DefineFastFlag(x,y)end;genv.getfflag=function(x)return game:GetFastFlag(x)end
-genv.identifyexecutor=make_c_closure(function()return "Syntax","2.0.0"end)
+genv.identifyexecutor=make_c_closure(function()return "Elaina","2.0.0"end)
 genv.getexecutorname=genv.identifyexecutor;genv.getexecutorversion=make_c_closure(function()return "1.0.0"end);genv.whatexecutor=genv.identifyexecutor
 genv.cache={_cache={},invalidate=function(i)if type(i)~="userdata"then return end;genv.cache._cache[i]=false;pcall(function()i:Destroy()end)end,iscached=function(i)if type(i)~="userdata"then return false end;return genv.cache._cache[i]~=false end,replace=function(i,i2)if type(i)~="userdata"then return end;genv.cache._cache[i]=i2 end}
 genv.getsenv=make_c_closure(function(S)return{script=S}end);genv.gethui=make_c_closure(function()local c=nil;pcall(function()local pg=Players.LocalPlayer:WaitForChild("PlayerGui",5);if pg then c=Instance.new("Folder");c.Name="CoreGui";c.Parent=pg end end);if not c then c=CoreGui end;return c end)

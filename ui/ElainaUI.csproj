@@ -11,7 +11,7 @@
     <SelfContained>false</SelfContained>
   </PropertyGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\build\Release\SyntaxAPI.dll" Link="SyntaxAPI.dll">
+    <EmbeddedResource Include="..\build\Release\Elaina.dll" Link="Elaina.dll">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

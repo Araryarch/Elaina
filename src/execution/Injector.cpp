@@ -71,7 +71,7 @@ struct LuaShellcodeParams {
 
 static_assert(sizeof(LuaShellcodeParams) == 0x30, "LuaShellcodeParams size");
 
-// Shellcode: luaL_loadbuffer(L, bytecode, size, "Syntax"), then lua_pcall(L,0,0,0)
+// Shellcode: luaL_loadbuffer(L, bytecode, size, "Elaina"), then lua_pcall(L,0,0,0)
 static const uint8_t kLuaShellcode[] = {
     0x55,                         // push rbp
     0x48, 0x89, 0xE5,             // mov rbp, rsp
@@ -352,7 +352,7 @@ static bool InjectViaLuaApi(Memory& mem, InstanceTree& tree,
     params.bytecode_size = rsb1Data.size();
     params.loadbuffer_addr = loadAddr;
     params.pcall_addr = pcallAddr;
-    memcpy(params.script_name, "Syntax", 7);
+    memcpy(params.script_name, "Elaina", 7);
 
     // Allocate RWX page
     auto page = mem.Allocate(0x2000, PAGE_EXECUTE_READWRITE);

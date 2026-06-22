@@ -1,12 +1,12 @@
 @echo off
-REM Syntax Executor - Hybrid Dist Build
+REM Elaina - Hybrid Dist Build
 REM Builds C++ DLL + C# UI, packages into dist/
 REM Requires: Visual Studio 2022, .NET 8 SDK, CMake 3.10+
 
 setlocal enabledelayedexpansion
 
 echo ========================================
-echo  Syntax Executor - Dist Build
+echo  Elaina - Dist Build
 echo ========================================
 echo.
 
@@ -37,7 +37,7 @@ echo.
 REM ===========================================
 REM Step 1: Build C++ DLL
 REM ===========================================
-echo [*] Step 1/3: Building SyntaxAPI.dll...
+echo [*] Step 1/3: Building Elaina.dll...
 if not exist "build" mkdir build
 pushd build
 echo [*] Configuring CMake...
@@ -57,7 +57,7 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 popd
-echo [+] SyntaxAPI.dll built successfully.
+echo [+] Elaina.dll built successfully.
 
 REM ===========================================
 REM Step 2: Build C# UI (single-file publish)
@@ -79,8 +79,8 @@ echo [*] Step 3/3: Packaging into dist/...
 if not exist "dist" mkdir dist
 
 REM Copy DLL
-copy /Y "build\%CONFIG%\SyntaxAPI.dll" "dist\SyntaxAPI.dll" >nul
-echo [+] Copied: SyntaxAPI.dll (%CONFIG%)
+copy /Y "build\%CONFIG%\Elaina.dll" "dist\Elaina.dll" >nul
+echo [+] Copied: Elaina.dll (%CONFIG%)
 
 REM Copy EXE and config
 copy /Y "dist\tmp\Elaina-Executor.exe" "dist\Elaina-Executor.exe" >nul
@@ -109,7 +109,7 @@ echo Output in dist/:
 dir /B "dist\"
 
 echo.
-echo dist\SyntaxAPI.dll    - C++ executor engine (embedded in EXE)
+echo dist\Elaina.dll    - C++ executor engine (embedded in EXE)
 echo dist\Elaina-Executor.exe - Standalone executable (single-file, .NET 8 required)
 echo.
 echo To run: just launch Elaina-Executor.exe

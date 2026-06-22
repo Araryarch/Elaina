@@ -208,10 +208,10 @@ private:
         std::cout << "[HTTP/LS] Compiling for module '" << moduleName << "' @ 0x" << std::hex << module << std::dec << " (" << source.size() << " bytes)...\n";
 
         // Wrap as module function matching spec format:
-        // local module = {}; module["Syntax"] = function() <source> end; return module
+        // local module = {}; module["Elaina"] = function() <source> end; return module
         std::string wrappedSource = 
             "local module = {}\n"
-            "module[\"Syntax\"] = function()\n"
+            "module[\"Elaina\"] = function()\n"
             + source + "\n"
             "end\n"
             "return module";

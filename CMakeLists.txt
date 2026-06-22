@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(Syntax)
+project(Elaina)
 
 if(POLICY CMP0167)
     cmake_policy(SET CMP0167 OLD)
@@ -102,18 +102,18 @@ enable_language(ASM_MASM)
 
 include_directories(src include)
 
-add_library(SyntaxAPI SHARED ${CORE_SOURCES})
-target_compile_definitions(SyntaxAPI PRIVATE SYNTAX_EXPORT WIN32_LEAN_AND_MEAN NOMINMAX)
-set_target_properties(SyntaxAPI PROPERTIES LINKER_LANGUAGE CXX)
+add_library(Elaina SHARED ${CORE_SOURCES})
+target_compile_definitions(Elaina PRIVATE ELAINA_EXPORT WIN32_LEAN_AND_MEAN NOMINMAX)
+set_target_properties(Elaina PROPERTIES LINKER_LANGUAGE CXX)
 
-target_link_libraries(SyntaxAPI PRIVATE
+target_link_libraries(Elaina PRIVATE
     kernel32 user32 winhttp ws2_32
     Luau.Compiler Luau.Ast
     zlibstatic libzstd_static blake3
     httplib::httplib nlohmann_json::nlohmann_json
 )
 
-target_include_directories(SyntaxAPI PRIVATE
+target_include_directories(Elaina PRIVATE
     ${luau_SOURCE_DIR}/Compiler/include
     ${luau_SOURCE_DIR}/Ast/include
     ${luau_SOURCE_DIR}/Common/include

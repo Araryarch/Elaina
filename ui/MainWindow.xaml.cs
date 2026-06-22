@@ -36,17 +36,17 @@ namespace ElainaUI
 
         private void LogError(string msg)
         {
-            Log("Error: " + msg, new SolidColorBrush(Color.FromRgb(0xff, 0x47, 0x57)));
+            Log("Error: " + msg, new SolidColorBrush(Color.FromRgb(0xd5, 0x00, 0x00)));
         }
 
         private void LogOk(string msg)
         {
-            Log("OK: " + msg, new SolidColorBrush(Color.FromRgb(0x2e, 0xd5, 0x73)));
+            Log("OK: " + msg, new SolidColorBrush(Color.FromRgb(0x00, 0xc8, 0x53)));
         }
 
         private void LogInfo(string msg)
         {
-            Log("-> " + msg, new SolidColorBrush(Color.FromRgb(0x7c, 0x5c, 0xfc)));
+            Log("-> " + msg, new SolidColorBrush(Color.FromRgb(0x00, 0xbc, 0xd4)));
         }
 
         private void UpdateStatus(string text, bool connected = false)
@@ -55,8 +55,8 @@ namespace ElainaUI
             {
                 StatusText.Text = text;
                 StatusText.Foreground = connected
-                    ? new SolidColorBrush(Color.FromRgb(0x2e, 0xd5, 0x73))
-                    : new SolidColorBrush(Color.FromRgb(0x1a, 0x1a, 0x2e));
+                    ? new SolidColorBrush(Color.FromRgb(0x00, 0xc8, 0x53))
+                    : new SolidColorBrush(Color.FromRgb(0x0d, 0x0d, 0x1a));
             });
         }
 
@@ -135,6 +135,30 @@ namespace ElainaUI
         {
             ConsoleBox.Document.Blocks.Clear();
             Log("Console cleared");
+        }
+
+        private void OnScriptTabChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ScriptTabs.SelectedIndex == 0)
+            {
+                EditorPanel.Visibility = Visibility.Visible;
+                ScriptsPanel.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                EditorPanel.Visibility = Visibility.Collapsed;
+                ScriptsPanel.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void OnLoadScript(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is string script)
+            {
+                ScriptBox.Text = script;
+                ScriptTabs.SelectedIndex = 0;
+                LogInfo($"Loaded script: {(script.Length > 40 ? script[..40] + "..." : script)}");
+            }
         }
 
         protected override void OnKeyDown(KeyEventArgs e)

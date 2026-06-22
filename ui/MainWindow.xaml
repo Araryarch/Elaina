@@ -15,10 +15,10 @@
         <SolidColorBrush x:Key="LightBg" Color="#f5f5f5"/>
 
         <Style x:Key="BrutalBtn" TargetType="Button">
-            <Setter Property="Background" Value="#f0f0f0"/>
-            <Setter Property="Foreground" Value="#1a1a2e"/>
+            <Setter Property="Background" Value="#ffffff"/>
+            <Setter Property="Foreground" Value="#0d0d1a"/>
             <Setter Property="BorderThickness" Value="3"/>
-            <Setter Property="BorderBrush" Value="#1a1a2e"/>
+            <Setter Property="BorderBrush" Value="#0d0d1a"/>
             <Setter Property="Padding" Value="20,10"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -27,7 +27,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Grid>
-                            <Border Background="#1a1a2e" CornerRadius="0"
+                            <Border Background="#0d0d1a" CornerRadius="0"
                                     Margin="3,3,0,0" SnapsToDevicePixels="True"/>
                             <Border Name="bg" Background="{TemplateBinding Background}"
                                     CornerRadius="0" Padding="{TemplateBinding Padding}"
@@ -39,12 +39,12 @@
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="bg" Property="Background" Value="#e0e0ff"/>
+                                <Setter TargetName="bg" Property="Background" Value="#e0f7fa"/>
                                 <Setter TargetName="bg" Property="Margin" Value="1,1,0,0"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="bg" Property="Margin" Value="3,3,0,0"/>
-                                <Setter TargetName="bg" Property="Background" Value="#d0d0f0"/>
+                                <Setter TargetName="bg" Property="Background" Value="#b2ebf2"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.4"/>
@@ -56,29 +56,43 @@
         </Style>
 
         <Style x:Key="AccentBrutalBtn" TargetType="Button" BasedOn="{StaticResource BrutalBtn}">
-            <Setter Property="Background" Value="#7c5cfc"/>
-            <Setter Property="Foreground" Value="#f0f0f0"/>
-            <Setter Property="BorderBrush" Value="#1a1a2e"/>
+            <Setter Property="Background" Value="#00bcd4"/>
+            <Setter Property="Foreground" Value="#ffffff"/>
+            <Setter Property="BorderBrush" Value="#0d0d1a"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#8c6cfc"/>
+                    <Setter Property="Background" Value="#26c6da"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#5a3cd4"/>
+                    <Setter Property="Background" Value="#00acc1"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="DangerBrutalBtn" TargetType="Button" BasedOn="{StaticResource BrutalBtn}">
-            <Setter Property="Background" Value="#ff4757"/>
-            <Setter Property="Foreground" Value="#f0f0f0"/>
-            <Setter Property="BorderBrush" Value="#1a1a2e"/>
+            <Setter Property="Background" Value="#d50000"/>
+            <Setter Property="Foreground" Value="#ffffff"/>
+            <Setter Property="BorderBrush" Value="#0d0d1a"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#ff6b7a"/>
+                    <Setter Property="Background" Value="#e53935"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#cc3344"/>
+                    <Setter Property="Background" Value="#c62828"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SuccessBrutalBtn" TargetType="Button" BasedOn="{StaticResource BrutalBtn}">
+            <Setter Property="Background" Value="#00c853"/>
+            <Setter Property="Foreground" Value="#ffffff"/>
+            <Setter Property="BorderBrush" Value="#0d0d1a"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#00e676"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#00a844"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -92,7 +106,7 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Border Grid.Row="0" Background="#f0f0f0" BorderBrush="#1a1a2e" BorderThickness="3" Padding="16,10" Margin="0,0,0,14">
+        <Border Grid.Row="0" Background="#ffffff" BorderBrush="#0d0d1a" BorderThickness="3" Padding="16,10" Margin="0,0,0,14">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -100,14 +114,14 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Background="#7c5cfc" Width="12" Height="12" VerticalAlignment="Center" Margin="0,0,10,0" BorderBrush="#1a1a2e" BorderThickness="2"/>
-                    <TextBlock Text="EL AINA" FontSize="20" Foreground="#1a1a2e" FontWeight="ExtraBlack" VerticalAlignment="Center"/>
-                    <TextBlock Text=" EXECUTOR" FontSize="13" Foreground="#7c5cfc" FontWeight="Bold" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                    <Border Background="#00bcd4" Width="12" Height="12" VerticalAlignment="Center" Margin="0,0,10,0" BorderBrush="#0d0d1a" BorderThickness="2"/>
+                    <TextBlock Text="EL AINA" FontSize="20" Foreground="#0d0d1a" FontWeight="ExtraBlack" VerticalAlignment="Center"/>
+                    <TextBlock Text=" EXECUTOR" FontSize="13" Foreground="#00bcd4" FontWeight="Bold" VerticalAlignment="Center" Margin="8,0,0,0"/>
                 </StackPanel>
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Background="#2ed573" Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,6,0" BorderBrush="#1a1a2e" BorderThickness="2"/>
-                    <TextBlock x:Name="StatusText" Text="IDLE" FontSize="12" Foreground="#1a1a2e" FontWeight="Bold" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="PidText" Text="" FontSize="12" Foreground="#5a5a7a" FontWeight="Bold" Margin="14,0,0,0" VerticalAlignment="Center"/>
+                    <Border Background="#00c853" Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,6,0" BorderBrush="#0d0d1a" BorderThickness="2"/>
+                    <TextBlock x:Name="StatusText" Text="IDLE" FontSize="12" Foreground="#0d0d1a" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="PidText" Text="" FontSize="12" Foreground="#757575" FontWeight="Bold" Margin="14,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -120,7 +134,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Script Editor -->
-            <Border Grid.Column="0" Background="#f0f0f0" BorderBrush="#1a1a2e" BorderThickness="3" Margin="0,0,10,0">
+            <Border Grid.Column="0" Background="#ffffff" BorderBrush="#0d0d1a" BorderThickness="3" Margin="0,0,10,0">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="44"/>
@@ -128,34 +142,132 @@
                         <RowDefinition Height="52"/>
                     </Grid.RowDefinitions>
 
-                    <Grid Grid.Row="0" Background="#7c5cfc">
+                    <Grid Grid.Row="0" Background="#00bcd4">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="40"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="SCRIPT.LUA" FontSize="12" FontWeight="ExtraBlack" Foreground="#f0f0f0" VerticalAlignment="Center" Margin="14,0,0,0"/>
-                        <Button x:Name="ClearBtn" Grid.Column="2" Content="X" Width="32" Height="26" FontSize="11" FontWeight="Bold" Style="{StaticResource BrutalBtn}" Padding="0" Click="OnClear" Margin="0,0,10,0"/>
+
+                        <TabControl x:Name="ScriptTabs" Grid.Column="0" BorderThickness="0"
+                                    Background="Transparent" SelectedIndex="0"
+                                    VerticalAlignment="Center" Height="30">
+                            <TabControl.Resources>
+                                <Style TargetType="TabPanel">
+                                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                                </Style>
+                                <Style TargetType="TabItem">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Foreground" Value="#ccffffff"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="FontSize" Value="11"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                    <Setter Property="Padding" Value="12,6"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="TabItem">
+                                                <Border Name="border" Background="{TemplateBinding Background}"
+                                                        Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter ContentSource="Header"
+                                                                      HorizontalAlignment="Center"
+                                                                      VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="#0d0d1a"/>
+                                                        <Setter TargetName="border" Property="BorderThickness" Value="0"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="#00838f"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </TabControl.Resources>
+                            <TabItem Header="EDITOR"/>
+                            <TabItem Header="SCRIPTS"/>
+                        </TabControl>
+
+                        <Button x:Name="ClearBtn" Grid.Column="2" Content="X" Width="26" Height="22"
+                                FontSize="10" FontWeight="Bold" Style="{StaticResource BrutalBtn}"
+                                Padding="0" Click="OnClear" VerticalAlignment="Center" HorizontalAlignment="Right"/>
                     </Grid>
 
-                    <ScrollViewer Grid.Row="1" Background="#f0f0f0" BorderBrush="#1a1a2e" BorderThickness="0,3">
+                    <!-- Editor Panel -->
+                    <ScrollViewer Grid.Row="1" x:Name="EditorPanel"
+                                  Background="#ffffff" BorderBrush="#0d0d1a" BorderThickness="0,3">
                         <TextBox x:Name="ScriptBox"
                                  AcceptsReturn="True" AcceptsTab="True"
                                  TextWrapping="NoWrap"
-                                 Background="#ffffff" Foreground="#1a1a2e"
+                                 Background="#fafafa" Foreground="#0d0d1a"
                                  BorderThickness="0" FontSize="13" FontFamily="Cascadia Code, JetBrains Mono, Consolas"
                                  Padding="14,10" VerticalScrollBarVisibility="Hidden"
-                                 SelectionBrush="#7c5cfc" SelectionOpacity="0.3"
-                                 CaretBrush="#7c5cfc"/>
+                                 SelectionBrush="#00bcd4" SelectionOpacity="0.3"
+                                 CaretBrush="#00bcd4"/>
                     </ScrollViewer>
 
-                    <Border Grid.Row="2" Background="#1a1a2e" Padding="10,0">
+                    <!-- Scripts Panel (tabbed) -->
+                    <ScrollViewer Grid.Row="1" x:Name="ScriptsPanel" Visibility="Collapsed"
+                                  Background="#fafafa" BorderBrush="#0d0d1a" BorderThickness="0,3"
+                                  VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="0">
+                            <Border Background="#ffffff" BorderBrush="#e0e0e0" BorderThickness="0,0,0,1" Padding="12,10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="DEFAULT SCRIPT" FontSize="11" FontWeight="ExtraBlack" Foreground="#0d0d1a"/>
+                                        <TextBlock Text="Basic test script" FontSize="9" Foreground="#9e9e9e"/>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Content="LOAD" Style="{StaticResource AccentBrutalBtn}"
+                                            Height="26" FontSize="8" Padding="10,0" FontWeight="ExtraBlack"
+                                            Tag="print('Hello from Elaina!')" Click="OnLoadScript"/>
+                                </Grid>
+                            </Border>
+                            <Border Background="#ffffff" BorderBrush="#e0e0e0" BorderThickness="0,0,0,1" Padding="12,10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="INFINITE YIELD" FontSize="11" FontWeight="ExtraBlack" Foreground="#0d0d1a"/>
+                                        <TextBlock Text="Admin commands (placeholder)" FontSize="9" Foreground="#9e9e9e"/>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Content="LOAD" Style="{StaticResource AccentBrutalBtn}"
+                                            Height="26" FontSize="8" Padding="10,0" FontWeight="ExtraBlack"
+                                            Tag="-- Infinite Yield placeholder" Click="OnLoadScript"/>
+                                </Grid>
+                            </Border>
+                            <Border Background="#ffffff" BorderBrush="#e0e0e0" BorderThickness="0,0,0,1" Padding="12,10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="ESP / WALLHACK" FontSize="11" FontWeight="ExtraBlack" Foreground="#0d0d1a"/>
+                                        <TextBlock Text="Player ESP visual (placeholder)" FontSize="9" Foreground="#9e9e9e"/>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Content="LOAD" Style="{StaticResource AccentBrutalBtn}"
+                                            Height="26" FontSize="8" Padding="10,0" FontWeight="ExtraBlack"
+                                            Tag="-- ESP placeholder" Click="OnLoadScript"/>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <Border Grid.Row="2" Background="#0d0d1a" Padding="10,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="CTRL + ENTER" FontSize="11" Foreground="#6c6c8a" FontWeight="Bold" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="0" Text="CTRL + ENTER" FontSize="11" Foreground="#616161" FontWeight="Bold" VerticalAlignment="Center"/>
                             <Button x:Name="ExecuteBtn" Grid.Column="1"
                                     Content="EXECUTE" Style="{StaticResource AccentBrutalBtn}"
                                     Height="32" FontSize="11" Padding="24,0" FontWeight="ExtraBlack"
@@ -166,7 +278,7 @@
             </Border>
 
             <!-- Console Panel -->
-            <Border Grid.Column="1" Background="#f0f0f0" BorderBrush="#1a1a2e" BorderThickness="3">
+            <Border Grid.Column="1" Background="#ffffff" BorderBrush="#0d0d1a" BorderThickness="3">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="44"/>
@@ -174,23 +286,23 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <Grid Grid.Row="0" Background="#1a1a2e">
+                    <Grid Grid.Row="0" Background="#0d0d1a">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="CONSOLE" FontSize="12" FontWeight="ExtraBlack" Foreground="#f0f0f0" VerticalAlignment="Center" Margin="14,0,0,0"/>
+                        <TextBlock Grid.Column="0" Text="CONSOLE" FontSize="12" FontWeight="ExtraBlack" Foreground="#ffffff" VerticalAlignment="Center" Margin="14,0,0,0"/>
                         <Button x:Name="ClearConsoleBtn" Grid.Column="1" Content="X" Width="30" Height="24" FontSize="10" FontWeight="Bold" Style="{StaticResource BrutalBtn}" Padding="0" Click="OnClearConsole" Margin="0,0,10,0"/>
                     </Grid>
 
-                    <ScrollViewer Grid.Row="1" Background="#f0f0f0" BorderBrush="#1a1a2e" BorderThickness="0,3" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer Grid.Row="1" Background="#ffffff" BorderBrush="#0d0d1a" BorderThickness="0,3" VerticalScrollBarVisibility="Auto">
                         <RichTextBox x:Name="ConsoleBox" IsReadOnly="True"
-                                     Background="#ffffff" BorderThickness="0"
+                                     Background="#fafafa" BorderThickness="0"
                                      FontSize="11.5" FontFamily="Cascadia Code, JetBrains Mono, Consolas"
                                      Padding="12,8" VerticalScrollBarVisibility="Disabled">
                             <FlowDocument>
                                 <Paragraph Margin="0" Padding="0">
-                                    <Run Text="[EL AINA] v1.0.0 ready" Foreground="#7c5cfc" FontWeight="Bold"/>
+                                    <Run Text="[EL AINA] v1.0.0 ready" Foreground="#00bcd4" FontWeight="Bold"/>
                                 </Paragraph>
                             </FlowDocument>
                         </RichTextBox>
@@ -206,14 +318,14 @@
         </Grid>
 
         <!-- Footer -->
-        <Border Grid.Row="2" Background="#f0f0f0" BorderBrush="#1a1a2e" BorderThickness="3" Padding="14,6" Margin="0,14,0,0" Height="36">
+        <Border Grid.Row="2" Background="#ffffff" BorderBrush="#0d0d1a" BorderThickness="3" Padding="14,6" Margin="0,14,0,0" Height="36">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="READY" FontSize="11" Foreground="#5a5a7a" FontWeight="Bold" VerticalAlignment="Center"/>
-                <TextBlock Grid.Column="1" Text="X64  |  EL AINA V1.0" FontSize="10" Foreground="#7c5cfc" FontWeight="Bold" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="0" Text="READY" FontSize="11" Foreground="#757575" FontWeight="Bold" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="1" Text="X64  |  EL AINA V1.0" FontSize="10" Foreground="#00bcd4" FontWeight="Bold" VerticalAlignment="Center"/>
             </Grid>
         </Border>
     </Grid>

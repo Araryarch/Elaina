@@ -138,3 +138,17 @@ uintptr_t InstanceTree::FindDataModel() const {
     Log::Warn("DataModel not found via any method");
     return 0;
 }
+
+uintptr_t InstanceTree::FindModuleScript(const std::string& name) const {
+    auto dm = FindDataModel();
+    if (!dm) return 0;
+
+    auto cg = FindChild(dm, "CoreGui");
+    if (!cg) return 0;
+
+    for (auto c : GetChildren(cg)) {
+        if (GetClassName(c) == "ModuleScript" && GetName(c) == name)
+            return c;
+    }
+    return 0;
+}

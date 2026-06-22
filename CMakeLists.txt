@@ -85,6 +85,7 @@ file(GLOB_RECURSE CORE_SOURCES
     "src/instance/*.cpp"
     "src/execution/*.cpp"
     "src/network/*.cpp"
+    "src/service/*.cpp"
     "src/api/*.cpp"
 )
 

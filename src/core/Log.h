@@ -2,6 +2,7 @@
 #include <string>
 #include <string_view>
 #include <cstdio>
+#include <cstdarg>
 #include <ctime>
 #include <mutex>
 #include <functional>

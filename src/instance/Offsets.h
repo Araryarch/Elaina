@@ -60,6 +60,12 @@ struct OffsetTable {
     uintptr_t MS_Bytecode = 0x150;
     uintptr_t MS_BytecodePtr = 0x10;
     uintptr_t MS_Hash = 0x160;
+    uintptr_t MS_ProtectedString = 0x140;
+
+    // ProtectedString
+    uintptr_t PS_Data = 0x0;
+    uintptr_t PS_Size = 0x8;
+    uintptr_t PS_Capabilities = 0x10;
 
     // LocalScript
     uintptr_t LS_Bytecode = 0x1A8;
@@ -109,6 +115,12 @@ namespace offsets {
         inline constexpr uintptr_t ModuleScriptByteCode = 0x150;
         inline constexpr uintptr_t ModuleScriptBytecodePointer = 0x10;
         inline constexpr uintptr_t ModuleScriptHash = 0x160;
+        inline constexpr uintptr_t ModuleScriptProtectedString = 0x140;
+    }
+    namespace ProtectedString {
+        inline constexpr uintptr_t PS_Data = 0x0;
+        inline constexpr uintptr_t PS_Size = 0x8;
+        inline constexpr uintptr_t PS_Capabilities = 0x10;
     }
     namespace RenderJob {
         inline constexpr uintptr_t DataModel = 0x1B0;

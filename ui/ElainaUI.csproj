@@ -5,7 +5,12 @@
     <UseWPF>true</UseWPF>
     <PlatformTarget>x64</PlatformTarget>
     <Nullable>enable</Nullable>
-    <AssemblyName>ElainaUI</AssemblyName>
+    <AssemblyName>Elaina-Executor</AssemblyName>
     <RootNamespace>ElainaUI</RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\build\Elaina.dll" Link="Elaina.dll">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

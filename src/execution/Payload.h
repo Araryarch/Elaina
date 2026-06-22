@@ -60,6 +60,8 @@ genv.debug=table.clone(debug)
 genv.debug.getinfo=function(f,o)o=o or"sflnu";local r={};if string.find(o,"s")then r.short_src="src";r.source="=src";r.what="Lua"end;if string.find(o,"f")then r.func=type(f)=="function"and f or function()end end;if string.find(o,"l")then r.currentline=1 end;if string.find(o,"n")then r.name=""end;if string.find(o,"u")or string.find(o,"a")then r.numparams=0;r.is_vararg=0;r.nups=0 end;return r end
 genv.debug.getproto=function(f,i,a)if a then return{function()return true end}end;return function()return true end end;genv.debug.getprotos=function()return{function()return true end}end
 genv.debug.getconstant=function(f,i)return i==1 and"print"or i==3 and"Hello, world!"or nil end;genv.debug.getconstants=function()return{50000,"print",nil,"Hello, world!","warn"}end
+)LUA"
+R"LUA(
 genv.debug.getstack=function(l,i)return i and"ab"or{"ab"}end;genv.getstack=genv.debug.getstack
 genv.debug.setconstant=function(f,i,v)end;genv.debug.setstack=function(l,i,v)end
 genv.debug.setupvalue=function(f,i,v)if type(f)=="function"and debug.setupvalue then pcall(debug.setupvalue,f,i,v)end end

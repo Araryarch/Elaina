@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "core/Result.h"
+#include "syscall/Syscall.h"
 
 struct RobloxHandle {
     DWORD pid = 0;

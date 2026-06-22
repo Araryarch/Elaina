@@ -8,7 +8,10 @@
 
 class Memory {
 public:
-    explicit Memory(HANDLE hProcess);
+    Memory(HANDLE hProcess, uintptr_t baseAddr = 0);
+
+    void SetBaseAddr(uintptr_t base) { m_base = base; }
+    uintptr_t BaseAddr() const { return m_base; }
 
     template<typename T>
     Result<T> Read(uintptr_t addr) const {
@@ -33,8 +36,7 @@ public:
 
     Result<uintptr_t> Allocate(size_t size, uint32_t protect = PAGE_READWRITE);
 
-    Result<uintptr_t> FindModuleScript(const std::string& name) const;
-
 private:
     HANDLE m_process;
+    uintptr_t m_base{0};
 };

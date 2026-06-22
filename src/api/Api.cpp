@@ -1,35 +1,26 @@
 #include "Api.h"
-#include "core/Log.h"
-#include "core/Result.h"
-#include "execution/Compiler.h"
-#include "execution/Encoder.h"
+#include "service/Session.h"
+#include "service/ExecutionService.h"
+#include "service/NetworkService.h"
 #include "execution/Injector.h"
-#include "execution/Payload.h"
-#include "process/Process.h"
-#include "process/Memory.h"
-#include "network/Server.h"
-#include "network/Proxy.h"
+#include "core/Log.h"
+#include <cstring>
 
-static RobloxHandle g_process;
-static std::unique_ptr<Memory> g_memory;
-static Server g_server;
+static Session g_session;
+static NetworkService g_network;
 static std::string g_status = "Idle";
 
 static std::string HandleRequest(const std::string& method, const std::string& path, const std::string& body) {
     if (path == "/compile" && method == "POST") {
-        auto compiled = Compiler::Compile(body);
-        if (!compiled) return "Error: " + compiled.error();
-
-        auto encoded = Encoder::Encode(compiled.value);
-        if (!encoded) return "Error: " + encoded.error();
-
-        return encoded.value;
+        auto result = ExecutionService::CompileAndEncode(body);
+        if (!result) return "Error: " + result.ErrorMsg();
+        return std::string(result.value.begin(), result.value.end());
     }
 
     if (path == "/inject" && method == "POST") {
-        if (!g_memory) return "Error: Not attached";
+        if (!g_session.IsAttached()) return "Error: Not attached";
         std::vector<uint8_t> rsb1(body.begin(), body.end());
-        if (Injector::Execute(*g_memory, rsb1))
+        if (Injector::Execute(g_session.Mem(), g_session.Tree(), rsb1))
             return "ok";
         return "Error: Inject failed";
     }
@@ -40,62 +31,30 @@ static std::string HandleRequest(const std::string& method, const std::string& p
 extern "C" {
 
 bool __stdcall ElainaAttach() {
-    Log::Info("ElainaAttach called");
-
-    auto processes = RobloxHandle::FindAll();
-    if (processes.empty()) {
-        g_status = "Roblox not found";
-        Log::Error("No Roblox processes found");
+    if (!g_session.Attach()) {
+        g_status = "Failed to attach";
         return false;
     }
-
-    g_process = std::move(processes[0]);
-    g_memory = std::make_unique<Memory>(g_process.Handle());
-    g_status = "Attached to PID " + std::to_string(g_process.Pid());
-
-    Log::Info("Attached to Roblox PID %d", g_process.Pid());
+    g_status = "Attached to PID " + std::to_string(g_session.Handle().pid);
     return true;
 }
 
 void __stdcall ElainaDetach() {
-    g_server.Stop();
-    g_memory.reset();
-    g_process = RobloxHandle{};
+    g_network.Stop();
+    g_session.Detach();
     g_status = "Detached";
-    Log::Info("ElainaDetach done");
 }
 
 bool __stdcall ElainaExecute(const char* script) {
-    if (!g_memory) {
+    if (!g_session.IsAttached()) {
         g_status = "Not attached";
-        Log::Error("Execute called but not attached");
         return false;
     }
-
-    Log::Info("Compiling script (%zu chars)", strlen(script));
-
-    auto compiled = Compiler::Compile(script);
-    if (!compiled) {
-        g_status = "Compile failed: " + compiled.error();
-        Log::Error("Compile failed: %s", compiled.error().c_str());
+    if (!ExecutionService::Execute(g_session, script)) {
+        g_status = "Execution failed";
         return false;
     }
-
-    auto encoded = Encoder::Encode(compiled.value);
-    if (!encoded) {
-        g_status = "Encode failed: " + encoded.error();
-        Log::Error("Encode failed: %s", encoded.error().c_str());
-        return false;
-    }
-
-    std::vector<uint8_t> rsb1(encoded.value.begin(), encoded.value.end());
-    if (!Injector::Execute(*g_memory, rsb1)) {
-        g_status = "Inject failed";
-        return false;
-    }
-
-    g_status = "Executed ok";
-    Log::Info("Script executed successfully");
+    g_status = "Executed OK";
     return true;
 }
 
@@ -104,27 +63,29 @@ const char* __stdcall ElainaGetStatus() {
 }
 
 bool __stdcall ElainaInject() {
-    return ElainaExecute(kUncPayload);
+    if (!ExecutionService::InjectUnc(g_session)) {
+        g_status = "UNC inject failed";
+        return false;
+    }
+    g_status = "UNC injected";
+    return true;
 }
 
 void __stdcall ElainaStartServer(int port) {
-    g_server.OnRequest(HandleRequest);
-    g_server.Start(port);
+    g_network.SetHandler(HandleRequest);
+    g_network.Start(port);
     g_status = "Server running on port " + std::to_string(port);
-    Log::Info("ElainaStartServer on port %d", port);
 }
 
 void __stdcall ElainaStopServer() {
-    g_server.Stop();
+    g_network.Stop();
     g_status = "Server stopped";
-    Log::Info("ElainaStopServer");
 }
 
 } // extern "C"
 
 BOOL APIENTRY DllMain(HMODULE, DWORD reason, LPVOID) {
     if (reason == DLL_PROCESS_ATTACH) {
-        Log::Init("Elaina");
         Log::Info("Elaina DLL loaded");
     }
     return TRUE;

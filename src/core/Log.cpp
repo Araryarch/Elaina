@@ -1,4 +1,5 @@
 #include "Log.h"
+#include <Windows.h>
 #include <cstdarg>
 #include <chrono>
 

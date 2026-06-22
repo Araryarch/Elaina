@@ -1,9 +1,7 @@
 #include "Memory.h"
 #include "core/Log.h"
-#include "instance/InstanceTree.h"
-#include "instance/Offsets.h"
 
-Memory::Memory(HANDLE hProcess) : m_process(hProcess) {}
+Memory::Memory(HANDLE hProcess, uintptr_t baseAddr) : m_process(hProcess), m_base(baseAddr) {}
 
 bool Memory::ReadArray(uintptr_t addr, void* buf, uint32_t count) const {
     SIZE_T read = 0;
@@ -61,21 +59,4 @@ Result<uintptr_t> Memory::Allocate(size_t size, uint32_t protect) {
     return (uintptr_t)addr;
 }
 
-Result<uintptr_t> Memory::FindModuleScript(const std::string& name) const {
-    InstanceTree tree(*this, (uintptr_t)m_process);
-    auto dm = tree.FindDataModel();
-    if (!dm) return { Err::ProcessRead, "DataModel not found" };
 
-    auto cg = tree.FindChild(dm, "CoreGui");
-    if (!cg) return { Err::ProcessRead, "CoreGui not found" };
-
-    for (auto c : tree.GetChildren(cg)) {
-        auto cn = tree.GetClassName(c);
-        if (cn == "ModuleScript") {
-            auto cn2 = tree.GetName(c);
-            if (cn2 == name) return c;
-        }
-    }
-
-    return { Err::ProcessRead, "ModuleScript \"" + name + "\" not found in CoreGui" };
-}

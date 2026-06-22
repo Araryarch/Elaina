@@ -31,6 +31,8 @@ public:
     uintptr_t FindDataModelViaFDM() const;
     uintptr_t FindDataModelViaVE() const;
 
+    uintptr_t FindModuleScript(const std::string& name) const;
+
 private:
     const Memory& m_mem;
     uintptr_t m_base;

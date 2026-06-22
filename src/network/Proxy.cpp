@@ -1,5 +1,6 @@
 #include "Proxy.h"
 #include "core/Log.h"
+#include <Windows.h>
 #include <winhttp.h>
 #include <string>
 #include <vector>

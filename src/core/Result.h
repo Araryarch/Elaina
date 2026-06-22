@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <optional>
 #include <variant>
 
 enum class Err {
@@ -57,7 +56,7 @@ struct Result {
     std::string message;
 
     Result() : value{}, error(Err::None) {}
-    Result(T v) : value(v), error(Err::None) {}
+    Result(T v) : value(std::move(v)), error(Err::None) {}
     Result(Err e, std::string msg = {}) : value{}, error(e), message(std::move(msg)) {}
 
     bool Ok() const { return error == Err::None; }

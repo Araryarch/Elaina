@@ -1,37 +1,59 @@
 using System;
+using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace ElainaUI
 {
-    internal static class ElainaCore
+    static class ElainaCore
     {
-        private const string DllName = "Elaina.dll";
+        static ElainaCore()
+        {
+            var assembly = typeof(ElainaCore).Assembly;
+            var names = assembly.GetManifestResourceNames();
+            foreach (var name in names)
+            {
+                if (!name.Contains("Elaina.dll")) continue;
 
-        [DllImport(DllName, CallingConvention = CallingConvention.StdCall)]
+                var dllPath = Path.Combine(Path.GetTempPath(), "Elaina-" + Guid.NewGuid() + ".dll");
+                using (var stream = assembly.GetManifestResourceStream(name))
+                {
+                    if (stream == null) break;
+                    using var fs = new FileStream(dllPath, FileMode.Create, FileAccess.Write);
+                    stream.CopyTo(fs);
+                }
+                NativeLibrary.Load(dllPath);
+                break;
+            }
+        }
+
+        [DllImport("Elaina.dll", CallingConvention = CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool ElainaAttach();
 
-        [DllImport(DllName, CallingConvention = CallingConvention.StdCall)]
+        [DllImport("Elaina.dll", CallingConvention = CallingConvention.StdCall)]
         public static extern void ElainaDetach();
 
-        [DllImport(DllName, CallingConvention = CallingConvention.StdCall)]
+        [DllImport("Elaina.dll", CallingConvention = CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool ElainaExecute([MarshalAs(UnmanagedType.LPStr)] string script);
 
-        [DllImport(DllName, CallingConvention = CallingConvention.StdCall)]
+        [DllImport("Elaina.dll", CallingConvention = CallingConvention.StdCall)]
         public static extern IntPtr ElainaGetStatus();
 
-        [DllImport(DllName, CallingConvention = CallingConvention.StdCall)]
+        [DllImport("Elaina.dll", CallingConvention = CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool ElainaInject();
 
-        [DllImport(DllName, CallingConvention = CallingConvention.StdCall)]
+        [DllImport("Elaina.dll", CallingConvention = CallingConvention.StdCall)]
         public static extern void ElainaStartServer(int port);
 
-        [DllImport(DllName, CallingConvention = CallingConvention.StdCall)]
+        [DllImport("Elaina.dll", CallingConvention = CallingConvention.StdCall)]
         public static extern void ElainaStopServer();
 
         public static string GetStatus()
         {
-            var ptr = ElainaGetStatus();
-            return Marshal.PtrToStringAnsi(ptr) ?? "Unknown";
+            return Marshal.PtrToStringAnsi(ElainaGetStatus()) ?? "";
         }
     }
 }

@@ -54,11 +54,9 @@ namespace ElainaUI
             Dispatcher.Invoke(() =>
             {
                 StatusText.Text = text;
-                var color = connected
+                StatusText.Foreground = connected
                     ? new SolidColorBrush(Color.FromRgb(0x2e, 0xd5, 0x73))
-                    : new SolidColorBrush(Color.FromRgb(0x6c, 0x6c, 0x88));
-                StatusDot.Fill = color;
-                StatusText.Foreground = color;
+                    : new SolidColorBrush(Color.FromRgb(0x1a, 0x1a, 0x2e));
             });
         }
 

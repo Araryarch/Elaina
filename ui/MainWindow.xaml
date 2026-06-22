@@ -3,47 +3,51 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Elaina Executor" Height="720" Width="1000"
         WindowStartupLocation="CenterScreen"
-        Background="#0d0d1a" FontFamily="Segoe UI" Foreground="#e0e0f0"
+        Background="#0d0d1a" FontFamily="Segoe UI" Foreground="#0d0d1a"
         WindowStyle="SingleBorderWindow" ResizeMode="CanResize">
     <Window.Resources>
-        <Color x:Key="Accent">#7c5cfc</Color>
-        <Color x:Key="Surface">#16162a</Color>
-        <Color x:Key="SurfaceAlt">#1e1e36</Color>
-        <Color x:Key="Border">#2a2a4e</Color>
-        <Color x:Key="Danger">#ff4757</Color>
-        <Color x:Key="Success">#2ed573</Color>
-        <Color x:Key="Text">#e0e0f0</Color>
-        <Color x:Key="TextMuted">#6c6c88</Color>
+        <SolidColorBrush x:Key="Dark" Color="#0d0d1a"/>
+        <SolidColorBrush x:Key="White" Color="#ffffff"/>
+        <SolidColorBrush x:Key="Cyan" Color="#00bcd4"/>
+        <SolidColorBrush x:Key="Orange" Color="#ff6d00"/>
+        <SolidColorBrush x:Key="Danger" Color="#d50000"/>
+        <SolidColorBrush x:Key="Success" Color="#00c853"/>
+        <SolidColorBrush x:Key="LightBg" Color="#f5f5f5"/>
 
-        <Style x:Key="BaseBtn" TargetType="Button">
-            <Setter Property="Background" Value="#1e1e36"/>
-            <Setter Property="Foreground" Value="#e0e0f0"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="#3a3a5e"/>
-            <Setter Property="Padding" Value="16,8"/>
-            <Setter Property="FontSize" Value="12.5"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
+        <Style x:Key="BrutalBtn" TargetType="Button">
+            <Setter Property="Background" Value="#f0f0f0"/>
+            <Setter Property="Foreground" Value="#1a1a2e"/>
+            <Setter Property="BorderThickness" Value="3"/>
+            <Setter Property="BorderBrush" Value="#1a1a2e"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                CornerRadius="6" Padding="{TemplateBinding Padding}"
-                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
-                                SnapsToDevicePixels="True">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
+                        <Grid>
+                            <Border Background="#1a1a2e" CornerRadius="0"
+                                    Margin="3,3,0,0" SnapsToDevicePixels="True"/>
+                            <Border Name="bg" Background="{TemplateBinding Background}"
+                                    CornerRadius="0" Padding="{TemplateBinding Padding}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    SnapsToDevicePixels="True">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#2e2e52"/>
-                                <Setter Property="BorderBrush" Value="#5a4ad4"/>
+                                <Setter TargetName="bg" Property="Background" Value="#e0e0ff"/>
+                                <Setter TargetName="bg" Property="Margin" Value="1,1,0,0"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="#12122a"/>
-                                <Setter Property="BorderBrush" Value="#4a3ac4"/>
+                                <Setter TargetName="bg" Property="Margin" Value="3,3,0,0"/>
+                                <Setter TargetName="bg" Property="Background" Value="#d0d0f0"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Opacity" Value="0.35"/>
+                                <Setter Property="Opacity" Value="0.4"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -51,40 +55,36 @@
             </Setter>
         </Style>
 
-        <Style x:Key="AccentBtn" TargetType="Button" BasedOn="{StaticResource BaseBtn}">
+        <Style x:Key="AccentBrutalBtn" TargetType="Button" BasedOn="{StaticResource BrutalBtn}">
             <Setter Property="Background" Value="#7c5cfc"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderBrush" Value="#7c5cfc"/>
+            <Setter Property="Foreground" Value="#f0f0f0"/>
+            <Setter Property="BorderBrush" Value="#1a1a2e"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#8c6cfc"/>
-                    <Setter Property="BorderBrush" Value="#8c6cfc"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#6b4ce0"/>
-                    <Setter Property="BorderBrush" Value="#6b4ce0"/>
+                    <Setter Property="Background" Value="#5a3cd4"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="DangerBtn" TargetType="Button" BasedOn="{StaticResource BaseBtn}">
-            <Setter Property="Background" Value="#2d1520"/>
-            <Setter Property="BorderBrush" Value="#4a2030"/>
-            <Setter Property="Foreground" Value="#ff4757"/>
+        <Style x:Key="DangerBrutalBtn" TargetType="Button" BasedOn="{StaticResource BrutalBtn}">
+            <Setter Property="Background" Value="#ff4757"/>
+            <Setter Property="Foreground" Value="#f0f0f0"/>
+            <Setter Property="BorderBrush" Value="#1a1a2e"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#3d1a2a"/>
-                    <Setter Property="BorderBrush" Value="#ff4757"/>
+                    <Setter Property="Background" Value="#ff6b7a"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#1d0e18"/>
-                    <Setter Property="BorderBrush" Value="#cc3344"/>
+                    <Setter Property="Background" Value="#cc3344"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
     </Window.Resources>
 
-    <Grid Margin="14">
+    <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -92,7 +92,7 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Border Grid.Row="0" Background="#16162a" CornerRadius="8" Padding="16,12" BorderBrush="#2a2a4e" BorderThickness="1" Margin="0,0,0,10">
+        <Border Grid.Row="0" Background="#f0f0f0" BorderBrush="#1a1a2e" BorderThickness="3" Padding="16,10" Margin="0,0,0,14">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -100,13 +100,14 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="Elaina" FontSize="20" Foreground="#7c5cfc" FontWeight="Bold" VerticalAlignment="Center"/>
-                    <TextBlock Text=" executor" FontSize="13" Foreground="#6c6c88" VerticalAlignment="Center" Margin="6,0,0,0"/>
+                    <Border Background="#7c5cfc" Width="12" Height="12" VerticalAlignment="Center" Margin="0,0,10,0" BorderBrush="#1a1a2e" BorderThickness="2"/>
+                    <TextBlock Text="EL AINA" FontSize="20" Foreground="#1a1a2e" FontWeight="ExtraBlack" VerticalAlignment="Center"/>
+                    <TextBlock Text=" EXECUTOR" FontSize="13" Foreground="#7c5cfc" FontWeight="Bold" VerticalAlignment="Center" Margin="8,0,0,0"/>
                 </StackPanel>
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Ellipse x:Name="StatusDot" Width="7" Height="7" Fill="#6c6c88" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                    <TextBlock x:Name="StatusText" Text="Idle" FontSize="12" Foreground="#6c6c88" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="PidText" Text="" FontSize="12" Foreground="#4a4a68" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                    <Border Background="#2ed573" Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,6,0" BorderBrush="#1a1a2e" BorderThickness="2"/>
+                    <TextBlock x:Name="StatusText" Text="IDLE" FontSize="12" Foreground="#1a1a2e" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="PidText" Text="" FontSize="12" Foreground="#5a5a7a" FontWeight="Bold" Margin="14,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -118,47 +119,46 @@
                 <ColumnDefinition Width="280"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Script editor -->
-            <Border Grid.Column="0" Background="#16162a" CornerRadius="8" BorderBrush="#2a2a4e" BorderThickness="1" Margin="0,0,8,0">
+            <!-- Script Editor -->
+            <Border Grid.Column="0" Background="#f0f0f0" BorderBrush="#1a1a2e" BorderThickness="3" Margin="0,0,10,0">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="44"/>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="48"/>
+                        <RowDefinition Height="52"/>
                     </Grid.RowDefinitions>
 
-                    <Grid Grid.Row="0" Background="#1a1a30">
+                    <Grid Grid.Row="0" Background="#7c5cfc">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="Script" FontSize="12" FontWeight="SemiBold" Foreground="#e0e0f0" VerticalAlignment="Center" Margin="14,0,0,0"/>
-                        <TextBlock Grid.Column="0" Text="  .lua" FontSize="10" Foreground="#5a5a78" VerticalAlignment="Center" Margin="52,0,0,0"/>
-                        <Button x:Name="ClearBtn" Grid.Column="2" Content="Clear" Width="50" Height="24" FontSize="10" Style="{StaticResource BaseBtn}" Padding="0" Click="OnClear" Margin="0,0,14,0"/>
+                        <TextBlock Grid.Column="0" Text="SCRIPT.LUA" FontSize="12" FontWeight="ExtraBlack" Foreground="#f0f0f0" VerticalAlignment="Center" Margin="14,0,0,0"/>
+                        <Button x:Name="ClearBtn" Grid.Column="2" Content="X" Width="32" Height="26" FontSize="11" FontWeight="Bold" Style="{StaticResource BrutalBtn}" Padding="0" Click="OnClear" Margin="0,0,10,0"/>
                     </Grid>
 
-                    <ScrollViewer Grid.Row="1" Background="#0c0c18" BorderBrush="#1e1e36" BorderThickness="0,1">
+                    <ScrollViewer Grid.Row="1" Background="#f0f0f0" BorderBrush="#1a1a2e" BorderThickness="0,3">
                         <TextBox x:Name="ScriptBox"
                                  AcceptsReturn="True" AcceptsTab="True"
                                  TextWrapping="NoWrap"
-                                 Background="Transparent" Foreground="#e0e0f0"
+                                 Background="#ffffff" Foreground="#1a1a2e"
                                  BorderThickness="0" FontSize="13" FontFamily="Cascadia Code, JetBrains Mono, Consolas"
                                  Padding="14,10" VerticalScrollBarVisibility="Hidden"
-                                 SelectionBrush="#7c5cfc" SelectionOpacity="0.25"
+                                 SelectionBrush="#7c5cfc" SelectionOpacity="0.3"
                                  CaretBrush="#7c5cfc"/>
                     </ScrollViewer>
 
-                    <Border Grid.Row="2" Background="#1a1a30" Padding="10,0" CornerRadius="0,0,8,8">
+                    <Border Grid.Row="2" Background="#1a1a2e" Padding="10,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Ctrl + Enter to run" FontSize="11" Foreground="#4a4a68" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="0" Text="CTRL + ENTER" FontSize="11" Foreground="#6c6c8a" FontWeight="Bold" VerticalAlignment="Center"/>
                             <Button x:Name="ExecuteBtn" Grid.Column="1"
-                                    Content="Execute" Style="{StaticResource AccentBtn}"
-                                    Height="32" FontSize="12" Padding="24,0"
+                                    Content="EXECUTE" Style="{StaticResource AccentBrutalBtn}"
+                                    Height="32" FontSize="11" Padding="24,0" FontWeight="ExtraBlack"
                                     Click="OnExecute" IsEnabled="False"/>
                         </Grid>
                     </Border>
@@ -166,54 +166,54 @@
             </Border>
 
             <!-- Console Panel -->
-            <Border Grid.Column="1" Background="#16162a" CornerRadius="8" BorderBrush="#2a2a4e" BorderThickness="1">
+            <Border Grid.Column="1" Background="#f0f0f0" BorderBrush="#1a1a2e" BorderThickness="3">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="44"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <Grid Grid.Row="0" Background="#1a1a30">
+                    <Grid Grid.Row="0" Background="#1a1a2e">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="Console" FontSize="12" FontWeight="SemiBold" Foreground="#e0e0f0" VerticalAlignment="Center" Margin="14,0,0,0"/>
-                        <Button x:Name="ClearConsoleBtn" Grid.Column="1" Content="Clear" Width="42" Height="22" FontSize="10" Style="{StaticResource BaseBtn}" Padding="0" Click="OnClearConsole" Margin="0,0,14,0"/>
+                        <TextBlock Grid.Column="0" Text="CONSOLE" FontSize="12" FontWeight="ExtraBlack" Foreground="#f0f0f0" VerticalAlignment="Center" Margin="14,0,0,0"/>
+                        <Button x:Name="ClearConsoleBtn" Grid.Column="1" Content="X" Width="30" Height="24" FontSize="10" FontWeight="Bold" Style="{StaticResource BrutalBtn}" Padding="0" Click="OnClearConsole" Margin="0,0,10,0"/>
                     </Grid>
 
-                    <ScrollViewer Grid.Row="1" Background="#0c0c18" BorderBrush="#1e1e36" BorderThickness="0,1" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer Grid.Row="1" Background="#f0f0f0" BorderBrush="#1a1a2e" BorderThickness="0,3" VerticalScrollBarVisibility="Auto">
                         <RichTextBox x:Name="ConsoleBox" IsReadOnly="True"
-                                     Background="Transparent" BorderThickness="0"
+                                     Background="#ffffff" BorderThickness="0"
                                      FontSize="11.5" FontFamily="Cascadia Code, JetBrains Mono, Consolas"
                                      Padding="12,8" VerticalScrollBarVisibility="Disabled">
                             <FlowDocument>
                                 <Paragraph Margin="0" Padding="0">
-                                    <Run Text="Elaina v1.0.0 ready" Foreground="#5a5a78"/>
+                                    <Run Text="[EL AINA] v1.0.0 ready" Foreground="#7c5cfc" FontWeight="Bold"/>
                                 </Paragraph>
                             </FlowDocument>
                         </RichTextBox>
                     </ScrollViewer>
 
                     <StackPanel Grid.Row="2" Margin="10,10,10,12">
-                        <Button x:Name="AttachBtn" Content="Attach" Style="{StaticResource AccentBtn}" Height="32" FontSize="12" Click="OnAttach" Margin="0,0,0,6"/>
-                        <Button x:Name="InjectBtn" Content="Inject UNC" Style="{StaticResource BaseBtn}" Height="30" FontSize="11.5" Click="OnInject" IsEnabled="False" Margin="0,0,0,6"/>
-                        <Button x:Name="DetachBtn" Content="Detach" Style="{StaticResource DangerBtn}" Height="30" FontSize="11.5" Click="OnDetach"/>
+                        <Button x:Name="AttachBtn" Content="ATTACH" Style="{StaticResource AccentBrutalBtn}" Height="34" FontSize="11" FontWeight="ExtraBlack" Click="OnAttach" Margin="0,0,0,8"/>
+                        <Button x:Name="InjectBtn" Content="INJECT UNC" Style="{StaticResource BrutalBtn}" Height="32" FontSize="11" FontWeight="Bold" Click="OnInject" IsEnabled="False" Margin="0,0,0,8"/>
+                        <Button x:Name="DetachBtn" Content="DETACH" Style="{StaticResource DangerBrutalBtn}" Height="32" FontSize="11" FontWeight="Bold" Click="OnDetach"/>
                     </StackPanel>
                 </Grid>
             </Border>
         </Grid>
 
-        <!-- Status Bar -->
-        <Border Grid.Row="2" Background="#121222" CornerRadius="8" BorderBrush="#2a2a4e" BorderThickness="1" Padding="14,6" Margin="0,10,0,0" Height="32">
+        <!-- Footer -->
+        <Border Grid.Row="2" Background="#f0f0f0" BorderBrush="#1a1a2e" BorderThickness="3" Padding="14,6" Margin="0,14,0,0" Height="36">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Ready" FontSize="11" Foreground="#4a4a68" VerticalAlignment="Center"/>
-                <TextBlock Grid.Column="1" Text="x64 | Elaina v1.0.0" FontSize="10" Foreground="#3a3a58" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="0" Text="READY" FontSize="11" Foreground="#5a5a7a" FontWeight="Bold" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="1" Text="X64  |  EL AINA V1.0" FontSize="10" Foreground="#7c5cfc" FontWeight="Bold" VerticalAlignment="Center"/>
             </Grid>
         </Border>
     </Grid>

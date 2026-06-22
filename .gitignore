@@ -1,0 +1,57 @@
+# Build outputs
+build/
+bin/
+obj/
+
+# Visual Studio
+*.sln
+*.vcxproj*
+*.vcxitems*
+*.user
+*.suo
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.VC.opendb
+*.vs/
+
+# .NET
+ui/bin/
+ui/obj/
+**/bin/
+**/obj/
+*.nupkg
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+CTestTestfile.cmake
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Windows
+*.exe
+*.dll
+*.pdb
+*.exp
+*.lib
+*.obj
+*.ilk
+*.log
+
+# Temp files
+*.tmp
+*.temp
+Thumbs.db
+.DS_Store
+
+# Dependencies (fetched by CMake)
+_deps/
+example-projects/*

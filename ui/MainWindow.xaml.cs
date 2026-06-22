@@ -235,7 +235,7 @@ namespace ElainaUI
             ConsolePanel.Visibility = isTerminal ? Visibility.Collapsed : Visibility.Visible;
             TerminalPanel.Visibility = isTerminal ? Visibility.Visible : Visibility.Collapsed;
             if (isTerminal && _termProc == null)
-                TerminalWrite("[TERMINAL] press Enter to start cmd.exe\n");
+                StartTerminal();
         }
 
         private void OnScriptTabChanged(object sender, SelectionChangedEventArgs e)
@@ -323,7 +323,7 @@ namespace ElainaUI
                     StandardErrorEncoding = Encoding.UTF8,
                 };
 
-                _termProc = new Process { StartInfo = psi };
+                _termProc = new Process { StartInfo = psi, EnableRaisingEvents = true };
                 _termProc.Start();
 
                 _termInput = _termProc.StandardInput;
@@ -352,6 +352,8 @@ namespace ElainaUI
                     TerminalWriteErr("[TERMINAL] process exited\n");
                 };
 
+                TerminalInput.Focus();
+
                 if (initialCmd != null && _termInput != null)
                 {
                     _termInput.WriteLine(initialCmd);
@@ -360,7 +362,58 @@ namespace ElainaUI
             }
             catch (Exception ex)
             {
-                TerminalWriteErr("[TERMINAL] failed to start: " + ex.Message + "\n");
+                // Try PowerShell as fallback
+                try
+                {
+                    TerminalWriteErr("[TERMINAL] cmd.exe failed: " + ex.Message + "\n");
+                    TerminalWriteErr("[TERMINAL] trying powershell.exe...\n");
+
+                    var psi = new ProcessStartInfo
+                    {
+                        FileName = "powershell.exe",
+                        UseShellExecute = false,
+                        RedirectStandardInput = true,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true,
+                        StandardOutputEncoding = Encoding.UTF8,
+                        StandardErrorEncoding = Encoding.UTF8,
+                    };
+
+                    _termProc = new Process { StartInfo = psi, EnableRaisingEvents = true };
+                    _termProc.Start();
+                    _termInput = _termProc.StandardInput;
+
+                    TerminalBox.Document.Blocks.Clear();
+                    TerminalWrite("Windows PowerShell\n");
+                    TerminalWrite("Copyright (C) Microsoft Corporation. All rights reserved.\n\n");
+
+                    _termProc.OutputDataReceived += (_, args) =>
+                    {
+                        if (args.Data != null)
+                            TerminalWrite(args.Data + "\n");
+                    };
+                    _termProc.ErrorDataReceived += (_, args) =>
+                    {
+                        if (args.Data != null)
+                            TerminalWriteErr(args.Data + "\n");
+                    };
+                    _termProc.BeginOutputReadLine();
+                    _termProc.BeginErrorReadLine();
+
+                    _termProc.Exited += (_, _) =>
+                    {
+                        _termProc = null;
+                        _termInput = null;
+                        TerminalWriteErr("[TERMINAL] process exited\n");
+                    };
+
+                    TerminalInput.Focus();
+                }
+                catch (Exception ex2)
+                {
+                    TerminalWriteErr("[TERMINAL] failed to start: " + ex2.Message + "\n");
+                }
             }
         }
     }

@@ -57,3 +57,5 @@ _deps/
 example-projects/*
 dist/
 dist/*
+example-works/
+example-works/*

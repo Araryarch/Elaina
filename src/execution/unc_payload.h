@@ -1,6 +1,6 @@
 #pragma once
 
-const char* unc_payload = R"LUA(
+inline const char* unc_payload = R"LUA(
 -- UNC API Implementations Loaded internally
 
 local HttpService = game:GetService("HttpService")

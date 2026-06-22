@@ -2,7 +2,7 @@
 
 // SUNC-specific fixes payload - auto-executed after UNC payload
 
-const char* sunc_payload = R"LUA(
+inline const char* sunc_payload = R"LUA(
 
 -- SUNC FIXES
 print("[SUNC] Loading SUNC fixes...")

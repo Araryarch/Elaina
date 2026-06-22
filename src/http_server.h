@@ -210,11 +210,14 @@ private:
         std::vector<std::string> fullPath = rblx::GetFullInstancePath(sProcessHandle, module);
         std::cout << "[HTTP/LS] Compiling for module '" << moduleName << "' @ 0x" << std::hex << module << std::dec << " (" << source.size() << " bytes)...\n";
 
-        // Wrap as module function: local function <name>(...) <source> end; return {["<pid>"] = <name>}
-        std::string funcName = "ls_" + std::to_string(rand() % 999999);
+        // Wrap as module function matching spec format:
+        // local module = {}; module["Syntax"] = function() <source> end; return module
         std::string wrappedSource = 
-            "local function " + funcName + "(...) " + source + "\nend\n"
-            "return {[\"Elaina\"] = " + funcName + "}";
+            "local module = {}\n"
+            "module[\"Syntax\"] = function()\n"
+            + source + "\n"
+            "end\n"
+            "return module";
 
         // Compile
         auto [ok, bytecodeOrErr] = LuauCompiler::Compile(wrappedSource);
@@ -333,7 +336,7 @@ private:
 
         void* addr = nullptr;
         SIZE_T rs = rsb1Data.size();
-        if (syscall::NtAllocateVirtualMemory(h, &addr, 0, &rs, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE) != 0)
+        if (Syscall::AllocateMemory(h, &addr, rs, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE) != 0)
             return false;
         uintptr_t remoteData = reinterpret_cast<uintptr_t>(addr);
 

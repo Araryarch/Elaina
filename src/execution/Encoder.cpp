@@ -33,26 +33,12 @@ static std::string Sign(const std::string& bc) {
         blake3_hasher_finalize(&h, hash, 32);
     }
 
-    uint8_t thash[32];
-    for (int i = 0; i < 32; i++) {
-        uint8_t k = KEY[i & 3], hb = hash[i], c = k + i, r;
-        int sft;
-        switch (i & 3) {
-            case 0: sft = ((c & 3) + 1); r = rotl8(hb ^ ~k, sft); break;
-            case 1: sft = ((c & 3) + 2); r = rotl8(k ^ ~hb, sft); break;
-            case 2: sft = ((c & 3) + 3); r = rotl8(hb ^ ~k, sft); break;
-            case 3: sft = ((c & 3) + 4); r = rotl8(k ^ ~hb, sft); break;
-        }
-        thash[i] = r;
-    }
-
-    uint32_t fh;
-    memcpy(&fh, thash, 4);
-    uint8_t footer[FOOTER_SIZE]{};
-    uint32_t v;
-    v = fh ^ MAGIC_B; memcpy(footer, &v, 4);
-    v = fh ^ MAGIC_A; memcpy(footer + 4, &v, 4);
-    memcpy(footer + 8, thash, 32);
+    uint8_t footer[FOOTER_SIZE];
+    // 8-byte magic: \x00\x00\x00\x05\x00\x00\x00\x00
+    footer[0] = 0x00; footer[1] = 0x00; footer[2] = 0x00; footer[3] = 0x05;
+    footer[4] = 0x00; footer[5] = 0x00; footer[6] = 0x00; footer[7] = 0x00;
+    // 32-byte: raw BLAKE3 hash
+    memcpy(&footer[8], hash, 32);
 
     return bc + std::string((char*)footer, FOOTER_SIZE);
 }

@@ -15,6 +15,7 @@
 #include "execution/luau_wrapper.h"
 #include "http_server.h"
 #include "unc_payload.h"
+#include "sunc_payload.h"
 
 class ScriptExecutor {
 public:
@@ -57,7 +58,7 @@ private:
     // ========================================================================
     // INIT SCRIPT — Injected via SpoofWith on first execution
     // Stays alive via script.Parent = container
-    // ExecutionListener polls _exec module for C++ to write bytecode to
+    // ExecutionListener polls /poll for C++ to queue scripts
     // ========================================================================
     static std::string GetInitScript() {
         std::string initPart1 = R"LUA(
@@ -65,7 +66,7 @@ local HttpService = game:FindService("HttpService")
 local CoreGui = game:GetService("CoreGui")
 
 local SERVER = "http://127.0.0.1:9753"
-local EXEC_NAME = "Elaina"
+local EXEC_NAME = "Syntax"
 
 -- Clean up previous session if any
 local existing = CoreGui:FindFirstChild(EXEC_NAME)
@@ -119,9 +120,9 @@ end
 
 -- Environment globals
 local genv = {}
-local Elaina = {}
+local Syntax = {}
 
-function Elaina.loadstring(content, chunkName)
+function Syntax.loadstring(content, chunkName)
     if type(content) ~= "string" then return nil, "invalid argument #1 to 'loadstring'" end
     if content:sub(1,1) == "\0" or content:sub(1,1) == "\27" then return nil, "bytecode not supported" end
     
@@ -183,7 +184,6 @@ function Elaina.loadstring(content, chunkName)
         local ok, result = pcall(function() return require(module) end)
         
         if not ok then
-            -- Fallback error logging if require actually errors
             if tick() - start > 1 then
                 warn("[Loadstring] Error executing module: " .. tostring(result))
             end
@@ -201,14 +201,14 @@ function Elaina.loadstring(content, chunkName)
     end
 end
 
-function Elaina.request(options)
+function Syntax.request(options)
     assert(type(options) == "table", "invalid argument #1 to 'request'")
     assert(type(options.Url) == "string", "invalid option 'Url'")
     options.Method = options.Method or "GET"
 
     local reqHeaders = options.Headers or {}
     if not reqHeaders["User-Agent"] and not reqHeaders["user-agent"] then
-        reqHeaders["User-Agent"] = "Elaina"
+        reqHeaders["User-Agent"] = "Syntax"
     end
 
     local result = SendRequest({
@@ -238,9 +238,9 @@ function Elaina.request(options)
     }
 end
 
-function Elaina.httpget(url)
+function Syntax.httpget(url)
     assert(type(url) == "string", "invalid argument #1 to 'HttpGet'")
-    local resp = Elaina.request({Url = url, Method = "GET"})
+    local resp = Syntax.request({Url = url, Method = "GET"})
     if not resp.Success then
         warn("[HttpGet] Error fetching " .. url .. " (Status: " .. tostring(resp.StatusCode) .. ")")
         warn("[HttpGet] Body: " .. tostring(resp.Body))
@@ -249,28 +249,23 @@ function Elaina.httpget(url)
     return resp.Body
 end
 
-function Elaina.getgenv() return genv end
-function Elaina.getrenv() return getfenv(0) end
-function Elaina.identifyexecutor() return "Elaina", "2.0.0" end
-function Elaina.getexecutorname() return "Elaina" end
+function Syntax.getgenv() return genv end
+function Syntax.getrenv() return getfenv(0) end
+function Syntax.identifyexecutor() return "Syntax", "2.0.0" end
+function Syntax.getexecutorname() return "Syntax" end
+function Syntax.getidentity() return 8 end
+function Syntax.getthreadidentity() return 8 end
+function Syntax.setthreadidentity(n) end
+function Syntax.getthreadcontext() return 8 end
 
--- Identity functions (return true identity 8 now that we are natively 8!)
-function Elaina.getidentity() return 8 end
-function Elaina.getthreadidentity() return 8 end
-function Elaina.setthreadidentity(n) end
-function Elaina.getthreadcontext() return 8 end
-
--- Global gethui container
+-- Global gethui container — parented to PlayerGui, NOT CoreGui!
 local huiContainer = nil
 
--- We return a REAL Folder instance named "CoreGui" to prevent "Instance expected, got table" errors
-function Elaina.gethui()
+function Syntax.gethui()
     if not huiContainer or not huiContainer.Parent then
         pcall(function()
             huiContainer = Instance.new("Folder")
-            huiContainer.Name = "CoreGui" -- Spoofed name for security checks
-            
-            -- We MUST parent the GUI container to PlayerGui, NOT CoreGui!
+            huiContainer.Name = "CoreGui"
             local playerGui = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui", 5)
             if playerGui then
                 huiContainer.Parent = playerGui
@@ -283,21 +278,21 @@ function Elaina.gethui()
 end
 
 -- Install into genv
-genv.loadstring = Elaina.loadstring
-genv.request = Elaina.request
-genv.http_request = Elaina.request
-genv.http = { request = Elaina.request }
-genv.HttpGet = Elaina.httpget
-genv.httpget = Elaina.httpget
-genv.getgenv = Elaina.getgenv
-genv.getrenv = Elaina.getrenv
-genv.identifyexecutor = Elaina.identifyexecutor
-genv.getexecutorname = Elaina.getexecutorname
-genv.getidentity = Elaina.getidentity
-genv.getthreadidentity = Elaina.getthreadidentity
-genv.setthreadidentity = Elaina.setthreadidentity
-genv.getthreadcontext = Elaina.getthreadcontext
-genv.gethui = Elaina.gethui
+genv.loadstring = Syntax.loadstring
+genv.request = Syntax.request
+genv.http_request = Syntax.request
+genv.http = { request = Syntax.request }
+genv.HttpGet = Syntax.httpget
+genv.httpget = Syntax.httpget
+genv.getgenv = Syntax.getgenv
+genv.getrenv = Syntax.getrenv
+genv.identifyexecutor = Syntax.identifyexecutor
+genv.getexecutorname = Syntax.getexecutorname
+genv.getidentity = Syntax.getidentity
+genv.getthreadidentity = Syntax.getthreadidentity
+genv.setthreadidentity = Syntax.setthreadidentity
+genv.getthreadcontext = Syntax.getthreadcontext
+genv.gethui = Syntax.gethui
 
 -- Ensure raw metatable access is unlocked for sandbox interactions
 pcall(function() setreadonly(getrawmetatable(game), false) end)
@@ -308,12 +303,12 @@ local realGetService = realGame.GetService
 local gameProxy = setmetatable({}, {
     __index = function(_, k)
         if k == "HttpGet" or k == "httpget" then
-            return function(_, url) return Elaina.httpget(url) end
+            return function(_, url) return Syntax.httpget(url) end
         end
-        if k == "CoreGui" then return Elaina.gethui() end
+        if k == "CoreGui" then return Syntax.gethui() end
         if k == "GetService" or k == "getService" then
             return function(self, service)
-                if service == "CoreGui" then return Elaina.gethui() end
+                if service == "CoreGui" then return Syntax.gethui() end
                 return realGetService(realGame, service)
             end
         end
@@ -321,7 +316,6 @@ local gameProxy = setmetatable({}, {
         if not ok then return nil end
         if type(v) == "function" then
             return function(_, ...) 
-                -- We wrap function calls in pcall to suppress random errors 
                 local args = {...}
                 local success, result = pcall(function() return v(realGame, unpack(args)) end)
                 return success and result or nil
@@ -346,7 +340,7 @@ genv.script = nil
 
 -- Store in shared
 shared._rblx_genv = genv
-shared._rblx_Null = Elaina
+shared._rblx_Null = Syntax
 shared._rblx_http = SendRequest
 shared._rblx_game_proxy = gameProxy
 
@@ -380,9 +374,9 @@ while task.wait(0.1) do
 
         if result and result.Success and result.StatusCode == 200 and result.Body and #result.Body > 0 then
             print("[EXEC] Got script (" .. #result.Body .. " bytes), compiling...")
-            local fn, loadErr = Elaina.loadstring(result.Body)
+            local fn, loadErr = Syntax.loadstring(result.Body)
             if fn then
-                pcall(function() setfenv(fn, genv) end) -- ENFORCE SANDBOX ENVIRONMENT!
+                pcall(function() setfenv(fn, genv) end)
                 task.spawn(fn)
             else
                 warn("[EXEC] loadstring error: " .. tostring(loadErr))
@@ -394,7 +388,7 @@ while task.wait(0.1) do
     end
 end
 )LUA";
-        return initPart1 + std::string(unc_payload) + initPart2;
+        return initPart1 + std::string(unc_payload) + std::string(sunc_payload) + initPart2;
     }
 
 public:
@@ -429,8 +423,8 @@ public:
         // Phase 1: First execution — inject init script via SpoofWith
         if (!sInjected) {
             // Check for existing session recovery
-            if (sCachedCoreGui && rblx::FindChildByName(hProcess, sCachedCoreGui, "Elaina")) {
-                std::cout << "[EXEC] Existing Elaina session found in CoreGui — recovering...\n";
+            if (sCachedCoreGui && rblx::FindChildByName(hProcess, sCachedCoreGui, "Syntax")) {
+                std::cout << "[EXEC] Existing Syntax session found in CoreGui — recovering...\n";
                 sInjected = true;
             }
 
@@ -495,6 +489,18 @@ public:
     // ========================================================================
     static inline int s_ModuleIndex = 0;
 
+    // CRITICAL: Only accept modules containing jest/test/spec/story in their name.
+    // Active UI modules with different naming would crash if hijacked → Error 268.
+    static bool IsSafeModuleName(const std::string& name) {
+        std::string lower;
+        lower.resize(name.size());
+        std::transform(name.begin(), name.end(), lower.begin(), ::tolower);
+        return lower.find("jest") != std::string::npos ||
+               lower.find("test") != std::string::npos ||
+               lower.find("spec") != std::string::npos ||
+               lower.find("story") != std::string::npos;
+    }
+
     static uintptr_t FindUnloadedModule(HANDLE hProcess, std::string& outName) {
         if (!sCachedModules) return 0;
         
@@ -504,6 +510,10 @@ public:
             if (!folder) return;
             for (uintptr_t child : rblx::GetChildren(hProcess, folder)) {
                 if (rblx::ReadClassName(hProcess, child) != "ModuleScript") continue;
+                
+                // Name filter: only jest/test/spec/story modules
+                std::string childName = rblx::ReadInstanceName(hProcess, child);
+                if (!IsSafeModuleName(childName)) continue;
                 
                 uint8_t loadedStatus = ProcessScanner::Read<uint8_t>(hProcess, child + 0x188);
                 if (loadedStatus == 0x00) {
@@ -606,7 +616,7 @@ private:
         std::cout << "[INJECT-" << label << "] Waiting for init signal (Elaina folder in CoreGui)...\n";
         bool signaled = false;
         for (int i = 0; i < 40; i++) { // Max 4 seconds (40 * 100ms)
-            if (sCachedCoreGui && rblx::FindChildByName(hProcess, sCachedCoreGui, "Elaina")) {
+            if (sCachedCoreGui && rblx::FindChildByName(hProcess, sCachedCoreGui, "Syntax")) {
                 signaled = true;
                 break;
             }
@@ -713,13 +723,18 @@ private:
         inputs[1].ki.wScan = (WORD)MapVirtualKey(VK_ESCAPE, 0);
         inputs[1].ki.dwFlags = KEYEVENTF_KEYUP;
         SendInput(ARRAYSIZE(inputs), inputs, sizeof(INPUT));
-        std::cout << "[ESC] Key sent\n";
+        
+        // Supplement with PostMessage in case SendInput is unredirected
+        PostMessage(hwnd, WM_KEYDOWN, VK_ESCAPE, 0);
+        PostMessage(hwnd, WM_KEYUP, VK_ESCAPE, 0);
+        
+        std::cout << "[ESC] Key sent (SendInput + PostMessage)\n";
     }
 
     static uintptr_t AllocateRemote(HANDLE h, size_t size) {
         void* addr = nullptr;
         SIZE_T rs = size;
-        if (syscall::NtAllocateVirtualMemory(h, &addr, 0, &rs, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE) != 0)
+        if (Syscall::AllocateMemory(h, &addr, rs, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE) != 0)
             return 0;
         return reinterpret_cast<uintptr_t>(addr);
     }

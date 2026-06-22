@@ -6,7 +6,7 @@
 #include <vector>
 #include <optional>
 #include <iostream>
-#include "syscalls/syscalls.h"
+#include "syscall/Syscall.h"
 
 struct RobloxProcess {
     DWORD pid = 0;
@@ -24,7 +24,7 @@ struct RobloxProcess {
 
     RobloxProcess& operator=(RobloxProcess&& other) noexcept {
         if (this != &other) {
-            if (handle) syscall::NtClose(handle);
+            if (handle) Syscall::CloseHandle(handle);
             pid = other.pid;
             baseAddress = other.baseAddress;
             handle = other.handle;
@@ -39,7 +39,7 @@ struct RobloxProcess {
 
     ~RobloxProcess() {
         if (handle) {
-            syscall::NtClose(handle);
+            Syscall::CloseHandle(handle);
             handle = nullptr;
         }
     }
@@ -108,7 +108,7 @@ public:
         cid.UniqueProcess = reinterpret_cast<HANDLE>(static_cast<uintptr_t>(pid));
         cid.UniqueThread = nullptr;
 
-        NTSTATUS status = syscall::NtOpenProcess(
+        NTSTATUS status = Syscall::OpenProcess(
             &hProcess,
             PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_VM_OPERATION | PROCESS_QUERY_INFORMATION,
             &oa, &cid
@@ -120,14 +120,14 @@ public:
 
     static bool ReadMemory(HANDLE hProcess, uintptr_t address, void* buffer, size_t size) {
         SIZE_T bytesRead = 0;
-        NTSTATUS status = syscall::NtReadVirtualMemory(
+        NTSTATUS status = Syscall::ReadMemory(
             hProcess, reinterpret_cast<PVOID>(address), buffer, size, &bytesRead);
         return status == 0 && bytesRead == size;
     }
 
     static bool WriteMemory(HANDLE hProcess, uintptr_t address, const void* buffer, size_t size) {
         SIZE_T bytesWritten = 0;
-        NTSTATUS status = syscall::NtWriteVirtualMemory(
+        NTSTATUS status = Syscall::WriteMemory(
             hProcess, reinterpret_cast<PVOID>(address),
             const_cast<PVOID>(static_cast<const void*>(buffer)), size, &bytesWritten);
         return status == 0 && bytesWritten == size;

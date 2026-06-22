@@ -145,7 +145,7 @@ genv.savegame = genv.saveinstance
 genv.setfflag = function(x, y) return game:DefineFastFlag(x, y) end
 genv.getfflag = function(x) return game:GetFastFlag(x) end
 
-genv.identifyexecutor = make_c_closure(function() return "Elaina", "2.0.0" end)
+genv.identifyexecutor = make_c_closure(function() return "Syntax", "2.0.0" end)
 genv.getexecutorname = genv.identifyexecutor
 genv.getexecutorversion = make_c_closure(function() return "2.0.0" end)
 genv.whatexecutor = genv.identifyexecutor
@@ -168,7 +168,7 @@ genv.cache = {
 }
 
 genv.getsenv = make_c_closure(function(Script) return {script=Script} end)
-genv.gethui = make_c_closure(function() return CoreGui end)
+genv.gethui = make_c_closure(function() return Syntax.gethui() end)
 
 genv.isnetworkowner = function(Part)
     if Part.Anchored then return false end

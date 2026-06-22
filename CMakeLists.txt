@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(Elaina)
+project(Syntax)
 
 if(POLICY CMP0167)
     cmake_policy(SET CMP0167 OLD)
@@ -94,25 +94,26 @@ file(GLOB_RECURSE CORE_SOURCES
     "src/network/*.cpp"
     "src/service/*.cpp"
     "src/api/*.cpp"
+    "src/exports.cpp"
 )
 
 set_source_files_properties("src/syscall/Syscall.asm" PROPERTIES LANGUAGE ASM_MASM)
 enable_language(ASM_MASM)
 
-include_directories(src)
+include_directories(src include)
 
-add_library(Elaina SHARED ${CORE_SOURCES})
-target_compile_definitions(Elaina PRIVATE ELAINA_EXPORT WIN32_LEAN_AND_MEAN NOMINMAX)
-set_target_properties(Elaina PROPERTIES LINKER_LANGUAGE CXX)
+add_library(SyntaxAPI SHARED ${CORE_SOURCES})
+target_compile_definitions(SyntaxAPI PRIVATE SYNTAX_EXPORT WIN32_LEAN_AND_MEAN NOMINMAX)
+set_target_properties(SyntaxAPI PROPERTIES LINKER_LANGUAGE CXX)
 
-target_link_libraries(Elaina PRIVATE
+target_link_libraries(SyntaxAPI PRIVATE
     kernel32 user32 winhttp ws2_32
     Luau.Compiler Luau.Ast
     zlibstatic libzstd_static blake3
     httplib::httplib nlohmann_json::nlohmann_json
 )
 
-target_include_directories(Elaina PRIVATE
+target_include_directories(SyntaxAPI PRIVATE
     ${luau_SOURCE_DIR}/Compiler/include
     ${luau_SOURCE_DIR}/Ast/include
     ${luau_SOURCE_DIR}/Common/include

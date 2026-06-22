@@ -1,7 +1,12 @@
 #include "Session.h"
 #include "core/Log.h"
+#include "syscall/Syscall.h"
 
 bool Session::Attach() {
+    if (!Syscall::Initialize()) {
+        Log::Error("Syscall init failed");
+        return false;
+    }
     if (m_handle.Valid()) {
         Log::Warn("Already attached, detach first");
         return true;

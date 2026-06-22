@@ -65,59 +65,23 @@ public:
 
         constexpr uint32_t FOOTER_SIZE = 40u;
 
-        std::vector<uint8_t> blake3_hash(32);
+        uint8_t blake3_hash[32];
         {
             blake3_hasher hasher;
             blake3_hasher_init(&hasher);
             blake3_hasher_update(&hasher, bytecode.data(), bytecode.size());
-            blake3_hasher_finalize(&hasher, blake3_hash.data(), blake3_hash.size());
+            blake3_hasher_finalize(&hasher, blake3_hash, 32);
         }
 
-        std::vector<uint8_t> transformed_hash(32);
-        for (int i = 0; i < 32; ++i) {
-            uint8_t byte = KEY_BYTES[i & 3];
-            uint8_t hash_byte = blake3_hash[i];
-            uint8_t combined = byte + i;
-            uint8_t result;
-
-            switch (i & 3) {
-            case 0: {
-                int shift = ((combined & 3) + 1);
-                result = rotl8(hash_byte ^ ~byte, shift);
-                break;
-            }
-            case 1: {
-                int shift = ((combined & 3) + 2);
-                result = rotl8(byte ^ ~hash_byte, shift);
-                break;
-            }
-            case 2: {
-                int shift = ((combined & 3) + 3);
-                result = rotl8(hash_byte ^ ~byte, shift);
-                break;
-            }
-            case 3: {
-                int shift = ((combined & 3) + 4);
-                result = rotl8(byte ^ ~hash_byte, shift);
-                break;
-            }
-            }
-            transformed_hash[i] = result;
-        }
-
-        std::vector<uint8_t> footer(FOOTER_SIZE, 0);
-
-        uint32_t first_hash_dword = *reinterpret_cast<uint32_t*>(transformed_hash.data());
-        uint32_t footer_prefix = first_hash_dword ^ MAGIC_B;
-        memcpy(&footer[0], &footer_prefix, 4);
-
-        uint32_t xor_ed = first_hash_dword ^ MAGIC_A;
-        memcpy(&footer[4], &xor_ed, 4);
-
-        memcpy(&footer[8], transformed_hash.data(), 32);
+        uint8_t footer[FOOTER_SIZE];
+        // 8-byte magic: \x00\x00\x00\x05\x00\x00\x00\x00
+        footer[0] = 0x00; footer[1] = 0x00; footer[2] = 0x00; footer[3] = 0x05;
+        footer[4] = 0x00; footer[5] = 0x00; footer[6] = 0x00; footer[7] = 0x00;
+        // 32-byte: raw BLAKE3 hash
+        memcpy(&footer[8], blake3_hash, 32);
 
         std::string signed_bytecode = bytecode;
-        signed_bytecode.append(reinterpret_cast<const char*>(footer.data()), footer.size());
+        signed_bytecode.append(reinterpret_cast<const char*>(footer), FOOTER_SIZE);
 
         return signed_bytecode;
     }

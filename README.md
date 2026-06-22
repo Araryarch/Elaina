@@ -1,4 +1,5 @@
 # Elaina Executor
+<img width="1920" height="1080" alt="download" src="https://github.com/user-attachments/assets/5e3d420c-ac2c-47de-b7f3-1b985c6b2e0e" />
 
 > ⚠️ **THIS PROJECT IS STRICTLY FOR EDUCATIONAL PURPOSES ONLY** ⚠️
 >

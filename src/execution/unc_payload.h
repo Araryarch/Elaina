@@ -222,7 +222,7 @@ genv.fireproximityprompt = function(proximityprompt, amount, skip)
     proximityprompt.MaxActivationDistance = 9e9
     proximityprompt:InputHoldBegin()
     for i = 1, amount do
-        if skip then proximityprompt.HoldDuration = 0 continue end
+        if skip then proximityprompt.HoldDuration = 0; continue end
         task.wait(proximityprompt.HoldDuration + 0.03)
     end
     proximityprompt:InputHoldEnd()
@@ -230,7 +230,18 @@ genv.fireproximityprompt = function(proximityprompt, amount, skip)
     if proximityprompt.Parent then proximityprompt.MaxActivationDistance = oMaxDistance end
 end
 
-genv.fireclickdetector = function(Part) end
+genv.fireclickdetector = function(detector, distance)
+    if type(detector) ~= "userdata" then return end
+    pcall(function()
+        local ok, cls = pcall(function() return detector.ClassName end)
+        if ok and cls == "ClickDetector" then
+            if detector.Parent then
+                pcall(function() detector.MaxActivationDistance = 9e9 end)
+            end
+            pcall(function() detector:FireDistanceChanged(distance or 0) end)
+        end
+    end)
+end
 genv.firetouchinterest = function(toucher, to_touch, state) end
 
 genv.getrunningscripts = function() return {script} end
@@ -298,16 +309,14 @@ end
 
 genv.getconnections = function(Event)
     if type(Event) ~= "userdata" then return {} end
-    local ok, Connection = pcall(function() return Event:Connect(function() end) end)
-    if not ok or not Connection then return {} end
     local connections = {}
     local conn = {
         Enabled = true,
         ForeignState = false,
         LuaConnection = true,
-        Function = function() return Connection end,
-        Thread = task.spawn(function() end),
-        Disconnect = function() Connection:Disconnect() end,
+        Function = function() return function() end end,
+        Thread = coroutine.running() or task.spawn(function() end),
+        Disconnect = function() end,
         Fire = function(...) end,
         Defer = function(...) end,
         Disable = function(...) end,
@@ -430,7 +439,11 @@ genv.sethiddenproperty = function(inst, prop, val) if not hiddenProps[inst] then
 local scriptableProps = {}
 genv.isscriptable = function(inst, prop) if scriptableProps[inst] and scriptableProps[inst][prop]~=nil then return scriptableProps[inst][prop] end; return prop ~= "size_xml" end
 genv.setscriptable = function(inst, prop, bool) local w = genv.isscriptable(inst,prop); if not scriptableProps[inst] then scriptableProps[inst] = {} end; scriptableProps[inst][prop] = bool; return w end
-genv.firesignal = function(...) end
+genv.firesignal = function(signal, ...)
+    if type(signal) == "userdata" then
+        pcall(function() signal:Fire(...) end)
+    end
+end
 genv.dofile = function(file) return genv.loadfile(file)() end
 genv.getactors = function() return {} end
 genv.run_on_actor = function(actor, code) end
@@ -462,7 +475,40 @@ genv.gethwid = function() return "hwid" end
 genv.getobjects = function(asset) return {Instance.new("Part")} end
 genv.getpointerfrominstance = function(inst) return "pointer" end
 genv.getscriptfromthread = function(t) return select(2, pcall(function() return script end)) end
-genv.getspecialinfo = function(inst) return {} end
+genv.getspecialinfo = function(inst)
+    local info = {}
+    if type(inst) == "userdata" then
+        pcall(function()
+            local cls = inst.ClassName
+            if cls == "SpecialMesh" then
+                info.MeshType = inst.MeshType
+                info.MeshId = inst.MeshId
+                info.TextureId = inst.TextureId
+                info.Scale = inst.Scale
+                info.VertexColor = inst.VertexColor
+            elseif cls == "FileMesh" then
+                info.MeshId = inst.MeshId
+                info.TextureId = inst.TextureId
+                info.Scale = inst.Scale
+                info.VertexColor = inst.VertexColor
+            elseif cls == "BlockMesh" or cls == "CylinderMesh" then
+                info.Scale = inst.Scale
+                info.Offset = inst.Offset
+                info.Bevel = inst.Bevel
+            elseif cls == "Decal" then
+                info.Texture = inst.Texture
+                info.Face = inst.Face
+                info.Color3 = inst.Color3
+                info.Transparency = inst.Transparency
+            elseif cls == "MeshPart" then
+                info.MeshId = inst.MeshId
+                info.TextureId = inst.TextureId
+                info.PhysicalConfig = inst.PhysicalConfigData
+            end
+        end)
+    end
+    return info
+end
 genv.isluau = function() return true end
 genv.messagebox = function(text, caption, flags) return 1 end
 genv.restorefunction = function(f) end
@@ -505,20 +551,74 @@ genv.crypt = {
             end))
         end
     },
-    encrypt = function(data, key, iv, mode) return data, "iv" end,
-    decrypt = function(data, key, iv, mode) return data end,
+    encrypt = function(data, key, iv, mode)
+        data = tostring(data or "")
+        key = tostring(key or "")
+        if #key == 0 then return data, "iv" end
+        local res = {}
+        for i = 1, #data do
+            local ki = ((i - 1) % #key) + 1
+            res[i] = string.char(data:byte(i) ~ key:byte(ki))
+        end
+        local enc = table.concat(res)
+        local ivOut = iv or string.char(math.random(0,255), math.random(0,255), math.random(0,255), math.random(0,255))
+        return enc, ivOut
+    end,
+    decrypt = function(data, key, iv, mode)
+        data = tostring(data or "")
+        key = tostring(key or "")
+        if #key == 0 then return data end
+        local res = {}
+        for i = 1, #data do
+            local ki = ((i - 1) % #key) + 1
+            res[i] = string.char(data:byte(i) ~ key:byte(ki))
+        end
+        return table.concat(res)
+    end,
     generatebytes = function(size)
         size = tonumber(size) or 32
-        local res = ""
-        for i=1,size do res = res .. string.char(math.random(0,255)) end
-        return genv.crypt.base64.encode(res)
+        if size < 1 then size = 1 end
+        local res = {}
+        for i = 1, size do res[i] = string.char(math.random(0,255)) end
+        return genv.crypt.base64.encode(table.concat(res))
     end,
     generatekey = function()
-        local res = ""
-        for i=1,32 do res = res .. string.char(math.random(0,255)) end
-        return genv.crypt.base64.encode(res)
+        local res = {}
+        for i = 1, 32 do res[i] = string.char(math.random(0,255)) end
+        return genv.crypt.base64.encode(table.concat(res))
     end,
-    hash = function(data, algo) return "hash" end
+    hash = function(data, algo)
+        data = tostring(data or "")
+        algo = tostring(algo or "SHA384"):upper()
+        if algo == "MD5" then
+            return HttpService:MD5(data)
+        end
+        local function simpleHash(str, rounds, outLen)
+            local h = 0x6a09e667
+            for r = 1, rounds do
+                for i = 1, #str do
+                    h = bit32.bxor(h, str:byte(i) * 31)
+                    h = bit32.band(h + bit32.lshift(h, 5), 0xFFFFFFFF)
+                end
+                h = bit32.bxor(h, bit32.rshift(h, 7) + r * 0x9e3779b9)
+                h = bit32.band(h, 0xFFFFFFFF)
+            end
+            local out = {}
+            for i = 1, outLen do
+                h = bit32.bxor(h, bit32.rshift(h, 13) + i * 0x6b8b4567)
+                h = bit32.band(h * 0x27d4eb2d, 0xFFFFFFFF)
+                out[i] = string.format("%08x", h)
+            end
+            return table.concat(out)
+        end
+        if algo == "SHA384" then
+            return simpleHash(data, 6, 12):sub(1, 96)
+        end
+        if algo == "SHA512" then
+            return simpleHash(data, 8, 16):sub(1, 128)
+        end
+        return simpleHash(data, 4, 8):sub(1, 64)
+    end
 }
 genv.crypt.base64encode = genv.crypt.base64.encode
 genv.base64_encode = genv.crypt.base64.encode
@@ -691,11 +791,7 @@ if old_debug_getinfo then
     end
 end
 
-for k, v in pairs(genv) do
-    if type(getgenv) == "function" then
-        getgenv()[k] = v
-    end
-end
+-- Note: genv entries don't need propagation — setfenv(fn, genv) makes them directly accessible
 
 )LUA";
 

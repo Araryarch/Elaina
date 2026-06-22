@@ -21,6 +21,7 @@
 #include <mutex>
 #include <functional>
 #include <chrono>
+#include <queue>
 
 using json = nlohmann::json;
 
@@ -47,10 +48,9 @@ private:
     static inline uintptr_t sDataModel = 0;
     static inline uintptr_t sBase = 0;
 
-    // Pending execute queue
+    // Pending execute queue (FIFO — scripts never overwritten)
     static inline std::mutex sExecMutex;
-    static inline std::string sPendingScript;
-    static inline bool sHasPendingScript = false;
+    static inline std::queue<std::string> sScriptQueue;
 
     // Heartbeat tracking
     static inline std::atomic<std::chrono::steady_clock::time_point> sLastPollTime{std::chrono::steady_clock::now()};
@@ -91,8 +91,7 @@ public:
         sServer->Post("/exec", [](const httplib::Request& req, httplib::Response& res) {
             std::lock_guard<std::mutex> lock(sExecMutex);
             std::cout << "[HTTP/POLL] Script queued: " << req.body.size() << " bytes\n";
-            sPendingScript = req.body;
-            sHasPendingScript = true;
+            sScriptQueue.push(req.body);
             res.set_content("ok", "text/plain");
         });
 
@@ -102,11 +101,10 @@ public:
             sLastPollTime.store(std::chrono::steady_clock::now());
             sSessionAlive.store(true);
             std::lock_guard<std::mutex> lock(sExecMutex);
-            if (sHasPendingScript) {
+            if (!sScriptQueue.empty()) {
                 std::cout << "[HTTP/POLL] Dispatching script to game...\n";
-                res.set_content(sPendingScript, "text/plain");
-                sHasPendingScript = false;
-                sPendingScript.clear();
+                res.set_content(sScriptQueue.front(), "text/plain");
+                sScriptQueue.pop();
             } else {
                 res.status = 204;
             }
@@ -145,11 +143,10 @@ public:
 
     static bool IsRunning() { return sRunning; }
 
-    // Queue a script for the Lua polling loop to pick up
+    // Queue a script for the Lua polling loop to pick up (FIFO, never overwrites)
     static void QueueScript(const std::string& source) {
         std::lock_guard<std::mutex> lock(sExecMutex);
-        sPendingScript = source;
-        sHasPendingScript = true;
+        sScriptQueue.push(source);
     }
 
     // Set Roblox process context (called from executor)

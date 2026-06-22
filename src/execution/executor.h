@@ -376,7 +376,6 @@ while task.wait(0.1) do
             print("[EXEC] Got script (" .. #result.Body .. " bytes), compiling...")
             local fn, loadErr = Syntax.loadstring(result.Body)
             if fn then
-                pcall(function() setfenv(fn, genv) end)
                 task.spawn(fn)
             else
                 warn("[EXEC] loadstring error: " .. tostring(loadErr))

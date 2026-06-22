@@ -67,6 +67,6 @@ echo ========================================
 echo.
 echo Output:
 echo   build\%CONFIG%\Elaina.dll
-echo   ui\bin\%CONFIG%\net8.0-windows\ElainaUI.exe
+echo   ui\bin\%CONFIG%\net8.0-windows\Elaina Executor.exe
 echo.
 pause

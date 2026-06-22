@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SyntaxDefinition name="Lua" extensions=".lua;.luau" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+    <Color name="Comment" foreground="#57A64A" />
+    <Color name="String" foreground="#D69D85" />
+    <Color name="Number" foreground="#B5CEA8" />
+    <Color name="Keyword" foreground="#569CD6" fontWeight="bold"/>
+    <Color name="Global" foreground="#4EC9B0" />
+    <Color name="Function" foreground="#DCDCAA" />
+    <Color name="Method" foreground="#DCDCAA" />
+
+    <RuleSet>
+        <Span color="Comment">
+            <Begin>--</Begin>
+        </Span>
+        <Span color="Comment" multiline="true">
+            <Begin>--\[\[</Begin>
+            <End>\]\]</End>
+        </Span>
+
+        <Span color="String">
+            <Begin>"</Begin>
+            <End>"</End>
+            <RuleSet>
+                <Span begin="\\" end="." />
+            </RuleSet>
+        </Span>
+        <Span color="String">
+            <Begin>'</Begin>
+            <End>'</End>
+            <RuleSet>
+                <Span begin="\\" end="." />
+            </RuleSet>
+        </Span>
+        <Span color="String" multiline="true">
+            <Begin>\[\[</Begin>
+            <End>\]\]</End>
+        </Span>
+		
+        <Keywords color="Keyword">
+            <Word>and</Word>
+            <Word>break</Word>
+            <Word>do</Word>
+            <Word>else</Word>
+            <Word>elseif</Word>
+            <Word>end</Word>
+            <Word>false</Word>
+            <Word>for</Word>
+            <Word>function</Word>
+            <Word>if</Word>
+            <Word>in</Word>
+            <Word>local</Word>
+            <Word>nil</Word>
+            <Word>not</Word>
+            <Word>or</Word>
+            <Word>repeat</Word>
+            <Word>return</Word>
+            <Word>then</Word>
+            <Word>true</Word>
+            <Word>until</Word>
+            <Word>while</Word>
+            <Word>continue</Word>
+        </Keywords>
+        
+        <Keywords color="Global">
+            <Word>_G</Word>
+            <Word>_VERSION</Word>
+            <Word>assert</Word>
+            <Word>collectgarbage</Word>
+            <Word>coroutine</Word>
+            <Word>debug</Word>
+            <Word>error</Word>
+            <Word>getfenv</Word>
+            <Word>getmetatable</Word>
+            <Word>io</Word>
+            <Word>ipairs</Word>
+            <Word>math</Word>
+            <Word>module</Word>
+            <Word>next</Word>
+            <Word>os</Word>
+            <Word>package</Word>
+            <Word>pairs</Word>
+            <Word>pcall</Word>
+            <Word>print</Word>
+            <Word>rawequal</Word>
+            <Word>rawget</Word>
+            <Word>rawset</Word>
+            <Word>require</Word>
+            <Word>select</Word>
+            <Word>setfenv</Word>
+            <Word>setmetatable</Word>
+            <Word>string</Word>
+            <Word>table</Word>
+            <Word>tonumber</Word>
+            <Word>tostring</Word>
+            <Word>type</Word>
+            <Word>unpack</Word>
+            <Word>xpcall</Word>
+            <Word>game</Word>
+            <Word>workspace</Word>
+            <Word>script</Word>
+            <Word>getgenv</Word>
+            <Word>getrenv</Word>
+            <Word>getrawmetatable</Word>
+            <Word>setreadonly</Word>
+            <Word>hookfunction</Word>
+        </Keywords>
+
+        <Rule color="Method">
+            \:[a-zA-Z_][a-zA-Z0-9_]*\s*\(
+        </Rule>
+
+        <Rule color="Function">
+            \b[a-zA-Z_][a-zA-Z0-9_]*\s*\(
+        </Rule>
+
+        <Rule color="Number">
+            \b0[xX][0-9a-fA-F]+|(\b\d+(\.[0-9]+)?|\.[0-9]+)([eE][+-]?[0-9]+)?
+        </Rule>
+    </RuleSet>
+</SyntaxDefinition>

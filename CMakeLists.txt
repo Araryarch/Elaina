@@ -67,25 +67,34 @@ FetchContent_Declare(
 set(JSON_BuildTests OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(json)
 
+FetchContent_Declare(
+    luau
+    GIT_REPOSITORY https://github.com/Roblox/luau.git
+    GIT_TAG 0.663
+    SOURCE_SUBDIR .
+)
 set(LUAU_BUILD_CLI OFF CACHE BOOL "" FORCE)
 set(LUAU_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(LUAU_BUILD_WEB OFF CACHE BOOL "" FORCE)
-add_subdirectory(third_party/luau EXCLUDE_FROM_ALL)
+FetchContent_MakeAvailable(luau)
 
 file(GLOB_RECURSE CORE_SOURCES
-    "src/syscalls/*.cpp" "src/syscalls/*.asm"
-    "src/process/*.cpp" "src/memory/*.cpp"
-    "src/execution/*.cpp" "src/exports.cpp"
+    "src/core/*.cpp"
+    "src/syscall/*.cpp" "src/syscall/*.asm"
+    "src/process/*.cpp"
+    "src/instance/*.cpp"
+    "src/execution/*.cpp"
+    "src/network/*.cpp"
+    "src/api/*.cpp"
 )
 
-set_source_files_properties("src/syscalls/syscalls.asm" PROPERTIES LANGUAGE ASM_MASM)
+set_source_files_properties("src/syscall/Syscall.asm" PROPERTIES LANGUAGE ASM_MASM)
 enable_language(ASM_MASM)
 
 include_directories(src)
-include_directories(include)
 
 add_library(Elaina SHARED ${CORE_SOURCES})
-target_compile_definitions(Elaina PRIVATE RBLX_EXPORT WIN32_LEAN_AND_MEAN NOMINMAX)
+target_compile_definitions(Elaina PRIVATE ELAINA_EXPORT WIN32_LEAN_AND_MEAN NOMINMAX)
 set_target_properties(Elaina PROPERTIES LINKER_LANGUAGE CXX)
 
 target_link_libraries(Elaina PRIVATE
@@ -96,9 +105,9 @@ target_link_libraries(Elaina PRIVATE
 )
 
 target_include_directories(Elaina PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/luau/Compiler/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/luau/Ast/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/luau/Common/include
+    ${luau_SOURCE_DIR}/Compiler/include
+    ${luau_SOURCE_DIR}/Ast/include
+    ${luau_SOURCE_DIR}/Common/include
     ${zlib_SOURCE_DIR}
     ${zlib_BINARY_DIR}
     ${zstd_SOURCE_DIR}/lib
